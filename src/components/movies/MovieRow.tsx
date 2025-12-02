@@ -1,5 +1,5 @@
 // src/components/movies/MovieRow.tsx
-import React from "react";
+import React, { useState } from "react";
 import type { TmdbMovie } from "../../types/tmdb";
 import MovieCard from "./MovieCard";
 import Spinner from "../common/Spinner";
@@ -12,6 +12,28 @@ interface MovieRowProps {
 }
 
 const MovieRow: React.FC<MovieRowProps> = ({ title, movies, loading, error }) => {
+    const ITEMS_PER_PAGE = 6;
+
+    const [page, setPage] = useState(0);
+
+
+    const totalPages = Math.max(1, Math.ceil(movies.length / ITEMS_PER_PAGE));
+
+    const pageChunks: TmdbMovie[][] = [];
+    for (let i = 0; i < movies.length; i += ITEMS_PER_PAGE) {
+        pageChunks.push(movies.slice(i, i + ITEMS_PER_PAGE));
+    }
+
+    const currentPage = Math.min(page, totalPages - 1);
+
+    const handlePrev = () => {
+        setPage((prev) => (prev - 1 + totalPages) % totalPages);
+    };
+
+    const handleNext = () => {
+        setPage((prev) => (prev + 1) % totalPages);
+    };
+
     return (
         <section className="mb-8 md:mb-10">
             <h2 className="mb-3 md:mb-4 text-lg md:text-xl font-semibold text-white">
@@ -38,16 +60,59 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, loading, error }) =>
 
             {!loading && !error && movies.length > 0 && (
                 <div className="relative">
-                    {/* 가로 스크롤 행 */}
-                    <div className="movie-row-scroll flex gap-3 md:gap-4 overflow-x-auto pb-2">
-                        {movies.map((movie) => (
-                            <MovieCard key={movie.id} movie={movie} />
-                        ))}
+                    {/* 좌우 슬라이드 버튼 (필요할 때만 표시) */}
+                    {movies.length > ITEMS_PER_PAGE && (
+                        <>
+                            <button
+                                type="button"
+                                onClick={handlePrev}
+                                className="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-xs text-white hover:bg-black/70"
+                            >
+                                {"<"}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleNext}
+                                className="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-xs text-white hover:bg-black/70"
+                            >
+                                {">"}
+                            </button>
+                        </>
+                    )}
+
+                    {/* 한 페이지 분량의 영화 카드들: translateX로 부드럽게 슬라이드 */}
+                    <div className="overflow-hidden px-6">
+                        <div
+                            className="flex gap-3 md:gap-4 transition-transform duration-500 ease-out"
+                            style={{ transform: `translateX(-${currentPage * 100}%)` }}
+                        >
+                            {pageChunks.map((chunk, pageIndex) => (
+                                <div
+                                    key={pageIndex}
+                                    className="flex gap-3 md:gap-4 min-w-full"
+                                >
+                                    {chunk.map((movie) => (
+                                        <MovieCard key={movie.id} movie={movie} />
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
-                    {/* 좌우 그라데이션 효과 (옵션) */}
-                    <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-black to-transparent" />
-                    <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-black to-transparent" />
+                    {/* 페이지 인디케이터 (●●●) */}
+                    {movies.length > ITEMS_PER_PAGE && (
+                        <div className="mt-2 flex justify-center gap-1">
+                            {Array.from({ length: totalPages }).map((_, i) => (
+                                <span
+                                    key={i}
+                                    className={
+                                        "h-1.5 w-4 rounded-full " +
+                                        (i === currentPage ? "bg-[#e50914]" : "bg-slate-600")
+                                    }
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
         </section>

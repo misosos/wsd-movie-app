@@ -20,19 +20,6 @@ body {
     --color-accent-dark: #b20710;
 }
 
-.movie-row-scroll::-webkit-scrollbar {
-    height: 6px;
-}
-
-.movie-row-scroll::-webkit-scrollbar-track {
-    background: #09090b;
-}
-
-.movie-row-scroll::-webkit-scrollbar-thumb {
-    background: var(--color-accent); /* 🔴 레드 포인트 */
-    border-radius: 9999px;
-}
-
 ::selection {
     background: rgba(229, 9, 20, 0.8);
     color: #f9fafb;
