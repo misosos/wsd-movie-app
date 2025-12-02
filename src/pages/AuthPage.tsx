@@ -19,31 +19,20 @@ const AuthPage: React.FC = () => {
     const { login, register } = useAuth();
     const navigate = useNavigate();
 
-    const toggleMode = () => {
-        setMode((prev) => (prev === "login" ? "register" : "login"));
-        setError(null);
-    };
-
-    const validateEmail = () => {
-        if (!emailRegex.test(email)) {
-            setError("이메일 형식이 올바르지 않습니다.");
-            return false;
-        }
-        return true;
-    };
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
 
-        if (!validateEmail()) return;
-
-        if (!agree) {
-            setError("약관에 동의해야 합니다.");
+        if (!emailRegex.test(email)) {
+            setError("이메일 형식이 올바르지 않습니다.");
             return;
         }
 
         if (mode === "register") {
+            if (!agree) {
+                setError("약관에 동의해야 합니다.");
+                return;
+            }
             if (password.length < 6) {
                 setError("비밀번호는 6자 이상이어야 합니다.");
                 return;
@@ -58,7 +47,7 @@ const AuthPage: React.FC = () => {
                 return;
             }
             alert(result.message);
-            // 회원가입 성공 후 로그인 모드로 전환
+            // 회원가입 후 로그인 모드로 전환
             setMode("login");
             setPassword("");
             setPasswordCheck("");
@@ -71,7 +60,7 @@ const AuthPage: React.FC = () => {
             setError(result.message);
             return;
         }
-        // 로그인 성공 → 홈으로 이동
+        alert(result.message);
         navigate("/");
     };
 
@@ -93,7 +82,6 @@ const AuthPage: React.FC = () => {
                     >
                         회원가입
                     </button>
-                    {/* 이 영역에 탭 전환 애니메이션 CSS 넣으면 과제 애니메이션 요건 충족 */}
                 </div>
 
                 <form className="auth-form" onSubmit={handleSubmit}>
@@ -159,7 +147,9 @@ const AuthPage: React.FC = () => {
                     <button
                         type="button"
                         className="auth-toggle"
-                        onClick={toggleMode}
+                        onClick={() =>
+                            setMode((prev) => (prev === "login" ? "register" : "login"))
+                        }
                     >
                         {mode === "login"
                             ? "아직 계정이 없다면? 회원가입 하기"
