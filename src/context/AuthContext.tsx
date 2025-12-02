@@ -1,5 +1,5 @@
 // src/context/AuthContext.tsx
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import type { AuthUser } from "../utils/auth";
 import {
     getCurrentUser,
@@ -25,15 +25,7 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<AuthUser | null>(null);
-
-    // 앱 첫 진입 시 localStorage에서 로그인 정보 복원
-    useEffect(() => {
-        const current = getCurrentUser();
-        if (current) {
-            setUser(current);
-        }
-    }, []);
+    const [user, setUser] = useState<AuthUser | null>(() => getCurrentUser());
 
     const isLoggedIn = !!user;
 
