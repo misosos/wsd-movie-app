@@ -108,7 +108,6 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                         <option value="popularity.desc">정렬 (인기순)</option>
                         <option value="vote_average.desc">정렬 (평점순)</option>
                         <option value="release_date.desc">정렬 (최신 개봉순)</option>
-                        <option value="title.asc">정렬 (제목순)</option>
                     </select>
 
                     {/* 초기화 버튼 */}

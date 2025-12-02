@@ -34,8 +34,7 @@ type TmdbMovieWithMeta = TmdbMovie & {
 type SortOption =
     | "popularity.desc"
     | "vote_average.desc"
-    | "release_date.desc"
-    | "title.asc";
+    | "release_date.desc";
 
 const SearchPage: React.FC = () => {
     const { user } = useAuth();
@@ -177,10 +176,6 @@ const SearchPage: React.FC = () => {
                     return (b.vote_average || 0) - (a.vote_average || 0);
                 case "release_date.desc":
                     return (b.release_date || "").localeCompare(a.release_date || "");
-                case "title.asc":
-                    return (a.title || a.name || "").localeCompare(
-                        b.title || b.name || ""
-                    );
                 default:
                     return 0;
             }
