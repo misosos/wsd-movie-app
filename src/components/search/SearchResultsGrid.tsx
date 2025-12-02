@@ -17,6 +17,16 @@ const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
     hasMore,
     movies,
 }) => {
+    // 같은 영화가 여러 번 넘어오는 경우를 대비해 id 기준으로 한 번 더 중복 제거
+    const uniqueMovies = (() => {
+        const seen = new Set<number>();
+        return movies.filter((movie) => {
+            if (seen.has(movie.id)) return false;
+            seen.add(movie.id);
+            return true;
+        });
+    })();
+
     // 에러
     if (error && !loading) {
         return (
@@ -27,7 +37,7 @@ const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
     }
 
     // 결과 없음
-    if (!loading && movies.length === 0) {
+    if (!loading && uniqueMovies.length === 0) {
         return (
             <p className="mt-6 text-center text-sm text-slate-400">
                 조건에 해당하는 영화가 없습니다.
@@ -38,7 +48,7 @@ const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
     return (
         <section className="mt-4">
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
-                {movies.map((movie) => (
+                {uniqueMovies.map((movie) => (
                     <MovieCard key={movie.id} movie={movie} />
                 ))}
             </div>
@@ -49,7 +59,7 @@ const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
                 </div>
             )}
 
-            {!loading && !hasMore && movies.length > 0 && (
+            {!loading && !hasMore && uniqueMovies.length > 0 && (
                 <p className="mt-4 text-center text-xs text-slate-500">
                     마지막 페이지입니다.
                 </p>

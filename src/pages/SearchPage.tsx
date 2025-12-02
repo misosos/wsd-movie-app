@@ -96,9 +96,18 @@ const SearchPage: React.FC = () => {
 
                 const res = await getPopularMovies(apiKey, page);
 
-                setResults((prev) =>
-                    page === 1 ? res.data.results : [...prev, ...res.data.results]
-                );
+                setResults((prev) => {
+                    const merged =
+                        page === 1 ? res.data.results : [...prev, ...res.data.results];
+
+                    // ✅ id 기준으로 중복 영화 제거
+                    const seen = new Set<number>();
+                    return merged.filter((movie) => {
+                        if (seen.has(movie.id)) return false;
+                        seen.add(movie.id);
+                        return true;
+                    });
+                });
                 setHasMore(page < res.data.total_pages);
             } catch (err) {
                 console.error(err);
