@@ -14,6 +14,10 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClick }) => {
     const imageUrl = movie.poster_path
         ? `${IMAGE_BASE_URL}${movie.poster_path}`
         : "/placeholder-poster.png"; // 없으면 추후 기본 이미지
+    const rating =
+        typeof movie.vote_average === "number"
+            ? movie.vote_average.toFixed(1)
+            : "N/A";
 
     return (
         <div
@@ -29,7 +33,19 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, onClick }) => {
             </div>
             <div className="movie-card__info">
                 <h3 className="movie-card__title">{title}</h3>
-                <p className="movie-card__rating">⭐ {movie.vote_average.toFixed(1)}</p>
+                <div className="movie-card__meta">
+                    <span className="movie-card__rating">⭐ {rating}</span>
+                    {movie.release_date && (
+                        <span className="movie-card__release-date">
+                            · 개봉일: {movie.release_date}
+                        </span>
+                    )}
+                </div>
+                {movie.overview && (
+                    <p className="movie-card__overview">
+                        {movie.overview}
+                    </p>
+                )}
             </div>
         </div>
     );

@@ -5,18 +5,29 @@ import {
     getNowPlayingMovies,
     getPopularMovies,
     getTopRatedMovies,
+    getUpcomingMovies,
 } from "../api/tmdb";
 import MovieRow from "../components/movies/MovieRow";
+import { useAuth } from "../context/AuthContext";
 
 const HomePage: React.FC = () => {
+    const { user } = useAuth();
+    const apiKey = user?.password; // 비밀번호 = TMDB API Key
+
     const [nowPlaying, setNowPlaying] = useState<TmdbMovie[]>([]);
     const [popular, setPopular] = useState<TmdbMovie[]>([]);
     const [topRated, setTopRated] = useState<TmdbMovie[]>([]);
+    const [upcoming, setUpcoming] = useState<TmdbMovie[]>([]);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        if (!apiKey) {
+            // 아직 로그인 정보(키)가 없으면 호출하지 않음
+            return;
+        }
+
         let isMounted = true;
 
         const fetchMovies = async () => {
@@ -24,10 +35,11 @@ const HomePage: React.FC = () => {
                 setLoading(true);
                 setError(null);
 
-                const [nowPlayingRes, popularRes, topRatedRes] = await Promise.all([
-                    getNowPlayingMovies(1),
-                    getPopularMovies(1),
-                    getTopRatedMovies(1),
+                const [nowPlayingRes, popularRes, topRatedRes, upcomingRes] = await Promise.all([
+                    getNowPlayingMovies(apiKey, 1),
+                    getPopularMovies(apiKey, 1),
+                    getTopRatedMovies(apiKey, 1),
+                    getUpcomingMovies(apiKey, 1),
                 ]);
 
                 if (!isMounted) return;
@@ -35,6 +47,7 @@ const HomePage: React.FC = () => {
                 setNowPlaying(nowPlayingRes.data.results);
                 setPopular(popularRes.data.results);
                 setTopRated(topRatedRes.data.results);
+                setUpcoming(upcomingRes.data.results);
             } catch (err) {
                 console.error(err);
                 if (isMounted) {
@@ -52,7 +65,7 @@ const HomePage: React.FC = () => {
         return () => {
             isMounted = false;
         };
-    }, []);
+    }, [apiKey]);
 
     return (
         <div className="home-page">
@@ -72,6 +85,12 @@ const HomePage: React.FC = () => {
                 title="최고 평점 영화"
                 movies={topRated}
                 loading={loading && topRated.length === 0}
+                error={error}
+            />
+            <MovieRow
+                title="개봉 예정작"
+                movies={upcoming}
+                loading={loading && upcoming.length === 0}
                 error={error}
             />
         </div>

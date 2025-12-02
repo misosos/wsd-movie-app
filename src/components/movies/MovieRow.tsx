@@ -13,21 +13,31 @@ interface MovieRowProps {
 
 const MovieRow: React.FC<MovieRowProps> = ({ title, movies, loading, error }) => {
     return (
-        <section className="movie-row">
-            <h2 className="movie-row__title">{title}</h2>
+        <section className="mb-10">
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-white">{title}</h2>
+            </div>
 
             {loading && (
-                <div className="movie-row__loading">
+                <div className="flex justify-center py-8">
                     <Spinner />
                 </div>
             )}
 
             {error && !loading && (
-                <div className="movie-row__error">{error}</div>
+                <div className="rounded-md bg-red-500/10 text-red-400 text-sm px-4 py-3">
+                    {error}
+                </div>
             )}
 
-            {!loading && !error && (
-                <div className="movie-row__list">
+            {!loading && !error && movies.length === 0 && (
+                <div className="text-sm text-slate-400 px-1 py-4">
+                    표시할 영화가 없습니다.
+                </div>
+            )}
+
+            {!loading && !error && movies.length > 0 && (
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
                     {movies.map((movie) => (
                         <MovieCard key={movie.id} movie={movie} />
                     ))}
