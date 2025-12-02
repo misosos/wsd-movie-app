@@ -81,9 +81,10 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({
 
                             <div className="mt-2 flex flex-wrap items-center gap-3 text-xs md:text-sm">
                                 {year && <span className="text-slate-300">{year}</span>}
-                                <span className="rounded border border-zinc-600 px-2 py-0.5 text-[11px] uppercase text-slate-300">
-                  TMDB {rating}
-                </span>
+                                <span className="inline-flex items-center gap-1 rounded border border-amber-400/60 bg-amber-400/10 px-2 py-0.5 text-[11px] font-semibold text-amber-300">
+                                  <span aria-hidden="true">★</span>
+                                  <span>{rating}</span>
+                                </span>
                                 {genreNames.length > 0 && (
                                     <span className="text-slate-300">
                     {genreNames.join(" · ")}
