@@ -1,18 +1,17 @@
 // src/router/RequireAuth.tsx
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../context/AuthContext";
 
 interface Props {
     children: React.ReactElement;
 }
 
 const RequireAuth: React.FC<Props> = ({ children }) => {
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn } = useAuth();  // 컨텍스트에서 로그인 상태 읽기
     const location = useLocation();
 
     if (!isLoggedIn) {
-        // 로그인 안 되어 있으면 /signin으로 이동
         return <Navigate to="/signin" replace state={{ from: location }} />;
     }
 
