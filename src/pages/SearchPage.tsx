@@ -12,6 +12,20 @@ type Genre = {
     name: string;
 };
 
+// 데모와 비슷하게 보여줄 대표 장르만 노출하기 위한 화이트리스트 (TMDB 장르 ID 기준)
+const DISPLAY_GENRE_IDS = [
+    28, // Action
+    12, // Adventure
+    16, // Animation
+    35, // Comedy
+    80, // Crime
+    10751, // Family
+    14, // Fantasy
+    27, // Horror
+    10749, // Romance
+    878, // Science Fiction
+];
+
 type TmdbMovieWithMeta = TmdbMovie & {
     popularity?: number;
     original_language?: string;
@@ -42,7 +56,6 @@ const SearchPage: React.FC = () => {
     const [selectedGenreId, setSelectedGenreId] = useState<number | "all">("all");
     const [minRating, setMinRating] = useState<number>(0);
     const [sortBy, setSortBy] = useState<SortOption>("popularity.desc");
-    const [year, setYear] = useState("");
     const [language, setLanguage] = useState<"all" | string>("all"); // 언어 필터
 
     // Top 버튼 표시 여부
@@ -56,7 +69,12 @@ const SearchPage: React.FC = () => {
             try {
                 setGenreLoading(true);
                 const res = await getMovieGenres(apiKey);
-                setGenres(res.data.genres ?? []);
+                const apiGenres = res.data.genres ?? [];
+                // TMDB 장르 전체가 아닌, 데모처럼 대표 장르만 노출 (ID 기준)
+                const filteredGenres = apiGenres.filter((g: Genre) =>
+                    DISPLAY_GENRE_IDS.includes(g.id)
+                );
+                setGenres(filteredGenres);
             } catch (err) {
                 console.error(err);
             } finally {
@@ -134,14 +152,6 @@ const SearchPage: React.FC = () => {
             );
         }
 
-        // 개봉년도 필터
-        if (year.trim()) {
-            const trimmedYear = year.trim();
-            data = data.filter((movie) =>
-                movie.release_date?.startsWith(trimmedYear)
-            );
-        }
-
         // 언어 필터 (TMDB original_language 기준)
         if (language !== "all") {
             const targetLang = language.toLowerCase();
@@ -173,14 +183,13 @@ const SearchPage: React.FC = () => {
         });
 
         return data;
-    }, [results, selectedGenreId, minRating, year, language, sortBy]);
+    }, [results, selectedGenreId, minRating, language, sortBy]);
 
     // ===== 핸들러 =====
     const handleResetFilters = () => {
         setSelectedGenreId("all");
         setMinRating(0);
         setSortBy("popularity.desc");
-        setYear("");
         setLanguage("all");
     };
 
@@ -196,7 +205,7 @@ const SearchPage: React.FC = () => {
                     찾아보기
                 </h1>
                 <p className="mt-1 text-xs text-slate-400 md:text-sm">
-                    TMDB 인기 영화를 장르, 평점, 개봉년도, 언어, 정렬 기준으로 자유롭게 필터링해 보세요.
+                    TMDB 인기 영화를 장르, 평점, 언어, 정렬 기준으로 자유롭게 필터링해 보세요.
                 </p>
             </div>
 
@@ -208,8 +217,6 @@ const SearchPage: React.FC = () => {
                 onChangeGenre={setSelectedGenreId}
                 minRating={minRating}
                 onChangeMinRating={setMinRating}
-                year={year}
-                onChangeYear={setYear}
                 sortBy={sortBy}
                 onChangeSortBy={(value) => setSortBy(value as SortOption)}
                 language={language}

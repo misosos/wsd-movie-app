@@ -15,9 +15,6 @@ interface SearchFilterBarProps {
     minRating: number;
     onChangeMinRating: (value: number) => void;
 
-    year: string;
-    onChangeYear: (value: string) => void;
-
     sortBy: string;
     onChangeSortBy: (value: string) => void;
 
@@ -43,8 +40,6 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     onChangeGenre,
     minRating,
     onChangeMinRating,
-    year,
-    onChangeYear,
     sortBy,
     onChangeSortBy,
     language,
@@ -68,7 +63,7 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                                 e.target.value === "all" ? "all" : Number(e.target.value)
                             )
                         }
-                        className="min-w-[110px] rounded border border-slate-300 bg-black px-4 py-2 text-xs text-slate-100 shadow-sm hover:bg-zinc-900 md:text-sm"
+                        className="min-w-[110px] cursor-pointer rounded border border-zinc-700 bg-[#181818] px-4 py-2 text-xs text-slate-100 shadow-sm hover:bg-zinc-900 focus:border-[#e50914] focus:outline-none md:text-sm"
                     >
                         <option value="all">장르 (전체)</option>
                         {genreLoading && <option>장르 불러오는 중...</option>}
@@ -84,7 +79,7 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                     <select
                         value={minRating}
                         onChange={(e) => onChangeMinRating(Number(e.target.value))}
-                        className="min-w-[110px] rounded border border-slate-300 bg-black px-4 py-2 text-xs text-slate-100 shadow-sm hover:bg-zinc-900 md:text-sm"
+                        className="min-w-[110px] cursor-pointer rounded border border-zinc-700 bg-[#181818] px-4 py-2 text-xs text-slate-100 shadow-sm hover:bg-zinc-900 focus:border-[#e50914] focus:outline-none md:text-sm"
                     >
                         <option value={0}>평점 (전체)</option>
                         <option value={6}>평점 6.0 이상</option>
@@ -96,7 +91,7 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                     <select
                         value={language}
                         onChange={(e) => onChangeLanguage(e.target.value)}
-                        className="min-w-[110px] rounded border border-slate-300 bg-black px-4 py-2 text-xs text-slate-100 shadow-sm hover:bg-zinc-900 md:text-sm"
+                        className="min-w-[110px] cursor-pointer rounded border border-zinc-700 bg-[#181818] px-4 py-2 text-xs text-slate-100 shadow-sm hover:bg-zinc-900 focus:border-[#e50914] focus:outline-none md:text-sm"
                     >
                         {LANGUAGE_OPTIONS.map((opt) => (
                             <option key={opt.value} value={opt.value}>
@@ -109,7 +104,7 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                     <select
                         value={sortBy}
                         onChange={(e) => onChangeSortBy(e.target.value)}
-                        className="min-w-[130px] rounded border border-slate-300 bg-black px-4 py-2 text-xs text-slate-100 shadow-sm hover:bg-zinc-900 md:text-sm"
+                        className="min-w-[130px] cursor-pointer rounded border border-zinc-700 bg-[#181818] px-4 py-2 text-xs text-slate-100 shadow-sm hover:bg-zinc-900 focus:border-[#e50914] focus:outline-none md:text-sm"
                     >
                         <option value="popularity.desc">정렬 (인기순)</option>
                         <option value="vote_average.desc">정렬 (평점순)</option>
@@ -121,25 +116,10 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                     <button
                         type="button"
                         onClick={onResetFilters}
-                        className="min-w-[90px] rounded border border-slate-300 bg-black px-4 py-2 text-xs font-medium text-slate-100 shadow-sm hover:bg-zinc-900 md:text-sm"
+                        className="min-w-[90px] cursor-pointer rounded border border-zinc-700 bg-[#181818] px-4 py-2 text-xs font-medium text-slate-100 shadow-sm hover:bg-zinc-900 focus:border-[#e50914] focus:outline-none md:text-sm"
                     >
                         초기화
                     </button>
-                </div>
-
-                {/* 개봉년도 입력 */}
-                <div className="mt-3 flex justify-center">
-                    <div className="flex items-center gap-2 text-xs text-slate-400 md:text-sm">
-                        <span>개봉년도</span>
-                        <input
-                            type="text"
-                            value={year}
-                            onChange={(e) => onChangeYear(e.target.value)}
-                            maxLength={4}
-                            placeholder="예: 2023"
-                            className="w-20 rounded border border-zinc-700 bg-zinc-900 px-2 py-1 text-xs text-slate-100 placeholder:text-zinc-500 focus:border-[#e50914] focus:outline-none"
-                        />
-                    </div>
                 </div>
             </div>
         </div>
