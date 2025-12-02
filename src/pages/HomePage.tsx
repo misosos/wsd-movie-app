@@ -8,6 +8,7 @@ import {
     getUpcomingMovies,
 } from "../api/tmdb";
 import MovieRow from "../components/movies/MovieRow";
+import HeroMovieBanner from "../components/movies/HeroMovieBanner";
 import { useAuth } from "../context/AuthContext";
 
 const HomePage: React.FC = () => {
@@ -18,6 +19,9 @@ const HomePage: React.FC = () => {
     const [popular, setPopular] = useState<TmdbMovie[]>([]);
     const [topRated, setTopRated] = useState<TmdbMovie[]>([]);
     const [upcoming, setUpcoming] = useState<TmdbMovie[]>([]);
+
+    const featuredMovie =
+        nowPlaying[0] || popular[0] || topRated[0] || upcoming[0];
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -68,7 +72,11 @@ const HomePage: React.FC = () => {
     }, [apiKey]);
 
     return (
-        <div className="home-page">
+        <div className="home-page space-y-8">
+            {/* 넷플릭스 스타일 메인 히어로 배너 */}
+            {featuredMovie && <HeroMovieBanner movie={featuredMovie} />}
+
+            {/* 영화 리스트 섹션들 */}
             <MovieRow
                 title="현재 상영작"
                 movies={nowPlaying}
