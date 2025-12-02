@@ -56,7 +56,7 @@ const SearchPage: React.FC = () => {
     const [selectedGenreId, setSelectedGenreId] = useState<number | "all">("all");
     const [minRating, setMinRating] = useState<number>(0);
     const [sortBy, setSortBy] = useState<SortOption>("popularity.desc");
-    const [language, setLanguage] = useState<"all" | "ko" | "en">("ko"); // 언어 필터 (기본: 한국어)
+    const [language, setLanguage] = useState<"all" | "ko" | "en">("all"); // 언어 필터 (기본: 한국어)
 
     // Top 버튼 표시 여부
     const [showTopButton, setShowTopButton] = useState(false);
@@ -82,7 +82,7 @@ const SearchPage: React.FC = () => {
             }
         };
 
-        fetchGenres();
+        void fetchGenres();
     }, [apiKey]);
 
     // ===== 영화 목록 로딩 (인기 영화 + 무한 스크롤) =====
@@ -108,7 +108,7 @@ const SearchPage: React.FC = () => {
             }
         };
 
-        fetchMovies();
+        void fetchMovies();
     }, [apiKey, page]);
 
     // ===== 스크롤 이벤트 (무한 스크롤 + Top 버튼) =====
@@ -145,11 +145,7 @@ const SearchPage: React.FC = () => {
 
         // 최소 평점 필터
         if (minRating > 0) {
-            data = data.filter(
-                (movie) =>
-                    typeof movie.vote_average === "number" &&
-                    movie.vote_average >= minRating
-            );
+            data = data.filter((movie) => movie.vote_average >= minRating);
         }
 
         // 언어 필터 (TMDB original_language 기준) - 전체 / ko / en

@@ -6,6 +6,8 @@ interface Genre {
     name: string;
 }
 
+type LanguageFilter = "all" | "ko" | "en";
+
 interface SearchFilterBarProps {
     genres: Genre[];
     genreLoading: boolean;
@@ -18,13 +20,13 @@ interface SearchFilterBarProps {
     sortBy: string;
     onChangeSortBy: (value: string) => void;
 
-    language: string;
-    onChangeLanguage: (value: string) => void;
+    language: LanguageFilter;
+    onChangeLanguage: (value: LanguageFilter) => void;
 
     onResetFilters: () => void;
 }
 
-const LANGUAGE_OPTIONS = [
+const LANGUAGE_OPTIONS: { value: LanguageFilter; label: string }[] = [
     { value: "all", label: "언어 (전체)" },
     { value: "ko", label: "한국어" },
     { value: "en", label: "영어" },
@@ -87,7 +89,7 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                     {/* 언어 */}
                     <select
                         value={language}
-                        onChange={(e) => onChangeLanguage(e.target.value)}
+                        onChange={(e) => onChangeLanguage(e.target.value as LanguageFilter)}
                         className="min-w-[110px] cursor-pointer rounded border border-zinc-700 bg-[#181818] px-4 py-2 text-xs text-slate-100 shadow-sm hover:bg-zinc-900 focus:border-[#e50914] focus:outline-none md:text-sm"
                     >
                         {LANGUAGE_OPTIONS.map((opt) => (
