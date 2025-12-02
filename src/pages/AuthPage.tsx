@@ -65,27 +65,46 @@ const AuthPage: React.FC = () => {
     };
 
     return (
-        <div className="auth-page">
-            <div className={`auth-card auth-card--${mode}`}>
-                <div className="auth-tabs">
+        <div className="auth-page min-h-screen flex items-center justify-center bg-slate-900">
+            <div
+                className={`
+                    auth-card auth-card--${mode}
+                    w-full max-w-md mx-4
+                    bg-slate-800/80 backdrop-blur
+                    rounded-2xl shadow-xl
+                    p-8
+                    transition-transform duration-300
+                `}
+            >
+                <div className="auth-tabs flex mb-6 rounded-full bg-slate-700 p-1">
                     <button
                         type="button"
-                        className={mode === "login" ? "active" : ""}
+                        className={
+                            "flex-1 py-2 text-sm font-medium rounded-full transition " +
+                            (mode === "login"
+                                ? "bg-white text-slate-900 shadow"
+                                : "text-slate-300 hover:text-white")
+                        }
                         onClick={() => setMode("login")}
                     >
                         로그인
                     </button>
                     <button
                         type="button"
-                        className={mode === "register" ? "active" : ""}
+                        className={
+                            "flex-1 py-2 text-sm font-medium rounded-full transition " +
+                            (mode === "register"
+                                ? "bg-white text-slate-900 shadow"
+                                : "text-slate-300 hover:text-white")
+                        }
                         onClick={() => setMode("register")}
                     >
                         회원가입
                     </button>
                 </div>
 
-                <form className="auth-form" onSubmit={handleSubmit}>
-                    <label>
+                <form className="auth-form space-y-4" onSubmit={handleSubmit}>
+                    <label className="block text-sm text-slate-200">
                         이메일
                         <input
                             type="email"
@@ -93,60 +112,76 @@ const AuthPage: React.FC = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder="example@domain.com"
                             required
+                            className="mt-1 w-full rounded-lg bg-slate-900/60 border border-slate-600 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent"
                         />
                     </label>
 
-                    <label>
+                    <label className="block text-sm text-slate-200">
                         비밀번호
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
+                            className="mt-1 w-full rounded-lg bg-slate-900/60 border border-slate-600 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent"
                         />
                     </label>
 
                     {mode === "register" && (
-                        <label>
+                        <label className="block text-sm text-slate-200">
                             비밀번호 확인
                             <input
                                 type="password"
                                 value={passwordCheck}
                                 onChange={(e) => setPasswordCheck(e.target.value)}
                                 required
+                                className="mt-1 w-full rounded-lg bg-slate-900/60 border border-slate-600 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent"
                             />
                         </label>
                     )}
 
-                    <div className="auth-options">
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={keepLogin}
-                                onChange={(e) => setKeepLogin(e.target.checked)}
-                            />
-                            로그인 상태 유지
-                        </label>
+                    <div className="auth-options space-y-2 pt-2">
+                        {mode === "login" && (
+                            <label className="flex items-center gap-2 text-xs text-slate-300">
+                                <input
+                                    type="checkbox"
+                                    checked={keepLogin}
+                                    onChange={(e) => setKeepLogin(e.target.checked)}
+                                    className="h-4 w-4 rounded border-slate-500 bg-slate-900 text-emerald-400 focus:ring-emerald-500"
+                                />
+                                로그인 상태 유지
+                            </label>
+                        )}
 
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={agree}
-                                onChange={(e) => setAgree(e.target.checked)}
-                            />
-                            (필수) 서비스 이용 약관에 동의합니다.
-                        </label>
+                        {mode === "register" && (
+                            <label className="flex items-center gap-2 text-xs text-slate-300">
+                                <input
+                                    type="checkbox"
+                                    checked={agree}
+                                    onChange={(e) => setAgree(e.target.checked)}
+                                    className="h-4 w-4 rounded border-slate-500 bg-slate-900 text-emerald-400 focus:ring-emerald-500"
+                                />
+                                (필수) 서비스 이용 약관에 동의합니다.
+                            </label>
+                        )}
                     </div>
 
-                    {error && <div className="auth-error">{error}</div>}
+                    {error && (
+                        <div className="auth-error text-xs text-red-400 bg-red-500/10 border border-red-500/40 rounded-md px-3 py-2">
+                            {error}
+                        </div>
+                    )}
 
-                    <button type="submit" className="auth-submit">
+                    <button
+                        type="submit"
+                        className="auth-submit w-full mt-2 rounded-lg bg-emerald-500 py-2.5 text-sm font-semibold text-slate-900 hover:bg-emerald-400 transition shadow-md"
+                    >
                         {mode === "login" ? "로그인" : "회원가입"}
                     </button>
 
                     <button
                         type="button"
-                        className="auth-toggle"
+                        className="auth-toggle w-full text-xs text-slate-300 mt-3 hover:text-white"
                         onClick={() =>
                             setMode((prev) => (prev === "login" ? "register" : "login"))
                         }
