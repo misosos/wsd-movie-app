@@ -1,193 +1,214 @@
 // src/pages/AuthPage.tsx
-import type React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { validateTmdbApiKey } from "../api/tmdbAuth";
 import toast from "react-hot-toast";
-import LoginForm from "../components/auth/LoginForm";
-import RegisterForm from "../components/auth/RegisterForm";
 
 type Mode = "login" | "register";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const AuthPage: React.FC = () => {
-  const [mode, setMode] = useState<Mode>("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordCheck, setPasswordCheck] = useState("");
-  const [keepLogin, setKeepLogin] = useState(false);
-  const [agree, setAgree] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+    const [mode, setMode] = useState<Mode>("login");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordCheck, setPasswordCheck] = useState("");
+    const [keepLogin, setKeepLogin] = useState(false);
+    const [agree, setAgree] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-  const { login, register } = useAuth();
-  const navigate = useNavigate();
+    const { login, register } = useAuth();
+    const navigate = useNavigate();
 
-  const handleSwitchMode = (nextMode: Mode) => {
-    if (mode === nextMode) return;
-    setError(null);
-    setMode(nextMode);
-  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError(null);
 
-    if (!emailRegex.test(email)) {
-      setError("이메일 형식이 올바르지 않습니다.");
-      return;
-    }
+        if (!emailRegex.test(email)) {
+            setError("이메일 형식이 올바르지 않습니다.");
+            return;
+        }
 
-    if (!password) {
-      setError("비밀번호(TMDB API 키)를 입력해주세요.");
-      return;
-    }
+        if (!password) {
+            setError("비밀번호(TMDB API 키)를 입력해주세요.");
+            return;
+        }
 
-    const isValidKey = await validateTmdbApiKey(password);
-    if (!isValidKey) {
-      setError(
-        "유효하지 않은 TMDB API 키입니다. TMDB에서 발급받은 키를 비밀번호로 입력해주세요."
-      );
-      return;
-    }
+        // 비밀번호는 TMDB에서 발급받은 API 키이고,
+        // 해당 키로 실제 TMDB API를 호출하여 유효성을 검증한다.
+        const isValidKey = await validateTmdbApiKey(password);
+        if (!isValidKey) {
+            setError("유효하지 않은 TMDB API 키입니다. TMDB에서 발급받은 키를 비밀번호로 입력해주세요.");
+            return;
+        }
 
-    if (mode === "register") {
-      if (!agree) {
-        setError("약관에 동의해야 합니다.");
-        return;
-      }
-      if (password !== passwordCheck) {
-        setError("비밀번호가 일치하지 않습니다.");
-        return;
-      }
+        if (mode === "register") {
+            if (!agree) {
+                setError("약관에 동의해야 합니다.");
+                return;
+            }
+            if (password !== passwordCheck) {
+                setError("비밀번호가 일치하지 않습니다.");
+                return;
+            }
 
-      const result = register(email, password);
-      if (!result.ok) {
-        setError(result.message);
-        return;
-      }
+            const result = register(email, password);
+            if (!result.ok) {
+                setError(result.message);
+                return;
+            }
+            // 회원가입 성공 토스트
+            toast.success(result.message || "회원가입이 완료되었습니다.");
+            // 회원가입 후 로그인 모드로 전환
+            setMode("login");
+            setPassword("");
+            setPasswordCheck("");
+            return;
+        }
 
-      toast.success(result.message || "회원가입이 완료되었습니다.");
-      setMode("login");
-      setPassword("");
-      setPasswordCheck("");
-      setAgree(false);
-      return;
-    }
+        // 로그인
+        const result = login(email, password, keepLogin);
+        if (!result.ok) {
+            setError(result.message);
+            return;
+        }
+        // 로그인 성공 토스트
+        toast.success(result.message || "로그인에 성공했습니다.");
+        navigate("/");
+    };
 
-    const result = login(email, password, keepLogin);
-    if (!result.ok) {
-      setError(result.message);
-      return;
-    }
-
-    toast.success(result.message || "로그인에 성공했습니다.");
-    navigate("/");
-  };
-
-  return (
-    <div className="auth-page relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-black via-zinc-950 to-black text-slate-100 pt-8">
-      {/* 배경 블롭 효과 - 넷플릭스 레드 톤 */}
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute -left-32 top-[-80px] h-80 w-80 rounded-full bg-[#e50914]/35 blur-3xl" />
-        <div className="absolute right-[-64px] bottom-[-64px] h-72 w-72 rounded-full bg-red-700/30 blur-3xl" />
-      </div>
-
-      {/* mode가 바뀔 때 카드 전체가 새로 애니메이션 되도록 key 사용 */}
-      <div
-        key={mode}
-        className={`
-          auth-card auth-card-switch
-          w-full max-w-lg mx-4 transform-gpu
-        `}
-      >
-        <form onSubmit={handleSubmit} noValidate>
-          <div
-            className={`
-              rounded-2xl px-8 py-8 md:px-10 md:py-10
-              shadow-2xl shadow-black/70 border
-              ${
-                mode === "login"
-                  ? "bg-black/80 border-zinc-800"
-                  : "bg-[#050714]/95 border-red-500/40"
-              }
-            `}
-          >
-            {/* 타이틀 */}
-            <div className="mb-6 text-center">
-              <h1 className="text-3xl font-bold text-white">
-                {mode === "login" ? "Sign in" : "Sign up"}
-              </h1>
-            </div>
-
-            {/* mode에 따라 서로 다른 컴포넌트를 독립적으로 렌더링 */}
-            {mode === "login" ? (
-              <LoginForm
-                email={email}
-                password={password}
-                keepLogin={keepLogin}
-                onChangeEmail={setEmail}
-                onChangePassword={setPassword}
-                onChangeKeepLogin={setKeepLogin}
-              />
-            ) : (
-              <RegisterForm
-                email={email}
-                password={password}
-                passwordCheck={passwordCheck}
-                agree={agree}
-                onChangeEmail={setEmail}
-                onChangePassword={setPassword}
-                onChangePasswordCheck={setPasswordCheck}
-                onChangeAgree={setAgree}
-              />
-            )}
-
-            {error && (
-              <div className="mt-4 text-xs text-red-300 bg-red-500/10 border border-red-500/40 rounded-md px-3 py-2">
-                {error}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              className="mt-6 w-full rounded-md bg-[#e50914] py-2.5 text-sm font-semibold text-white shadow-md hover:bg-[#f6121d] transition-colors"
+    return (
+        <div className="auth-page min-h-screen flex items-center justify-center bg-slate-900">
+            <div
+                className={`
+                    auth-card auth-card--${mode}
+                    w-full max-w-md mx-4
+                    bg-slate-800/80 backdrop-blur
+                    rounded-2xl shadow-xl
+                    p-8
+                    transition-transform duration-300
+                `}
             >
-              {mode === "login" ? "로그인" : "회원가입"}
-            </button>
+                <div className="auth-tabs flex mb-6 rounded-full bg-slate-700 p-1">
+                    <button
+                        type="button"
+                        className={
+                            "flex-1 py-2 text-sm font-medium rounded-full transition " +
+                            (mode === "login"
+                                ? "bg-white text-slate-900 shadow"
+                                : "text-slate-300 hover:text-white")
+                        }
+                        onClick={() => setMode("login")}
+                    >
+                        로그인
+                    </button>
+                    <button
+                        type="button"
+                        className={
+                            "flex-1 py-2 text-sm font-medium rounded-full transition " +
+                            (mode === "register"
+                                ? "bg-white text-slate-900 shadow"
+                                : "text-slate-300 hover:text-white")
+                        }
+                        onClick={() => setMode("register")}
+                    >
+                        회원가입
+                    </button>
+                </div>
 
-            {/* 모드 전환 안내 문구 */}
-            <div className="mt-5 text-center text-xs text-slate-400 md:text-sm">
-              {mode === "login" ? (
-                <span>
-                  아직 계정이 없으신가요?{" "}
-                  <button
-                    type="button"
-                    className="font-semibold text-white hover:underline underline-offset-2"
-                    onClick={() => handleSwitchMode("register")}
-                  >
-                    지금 가입하기
-                  </button>
-                </span>
-              ) : (
-                <span>
-                  이미 계정이 있으신가요?{" "}
-                  <button
-                    type="button"
-                    className="font-semibold text-white hover:underline underline-offset-2"
-                    onClick={() => handleSwitchMode("login")}
-                  >
-                    로그인하기
-                  </button>
-                </span>
-              )}
+                <form className="auth-form space-y-4" onSubmit={handleSubmit}>
+                    <label className="block text-sm text-slate-200">
+                        이메일
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="example@domain.com"
+                            required
+                            className="mt-1 w-full rounded-lg bg-slate-900/60 border border-slate-600 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent"
+                        />
+                    </label>
+
+                    <label className="block text-sm text-slate-200">
+                        비밀번호
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            className="mt-1 w-full rounded-lg bg-slate-900/60 border border-slate-600 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent"
+                        />
+                    </label>
+
+                    {mode === "register" && (
+                        <label className="block text-sm text-slate-200">
+                            비밀번호 확인
+                            <input
+                                type="password"
+                                value={passwordCheck}
+                                onChange={(e) => setPasswordCheck(e.target.value)}
+                                required
+                                className="mt-1 w-full rounded-lg bg-slate-900/60 border border-slate-600 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent"
+                            />
+                        </label>
+                    )}
+
+                    <div className="auth-options space-y-2 pt-2">
+                        {mode === "login" && (
+                            <label className="flex items-center gap-2 text-xs text-slate-300">
+                                <input
+                                    type="checkbox"
+                                    checked={keepLogin}
+                                    onChange={(e) => setKeepLogin(e.target.checked)}
+                                    className="h-4 w-4 rounded border-slate-500 bg-slate-900 text-emerald-400 focus:ring-emerald-500"
+                                />
+                                로그인 상태 유지
+                            </label>
+                        )}
+
+                        {mode === "register" && (
+                            <label className="flex items-center gap-2 text-xs text-slate-300">
+                                <input
+                                    type="checkbox"
+                                    checked={agree}
+                                    onChange={(e) => setAgree(e.target.checked)}
+                                    className="h-4 w-4 rounded border-slate-500 bg-slate-900 text-emerald-400 focus:ring-emerald-500"
+                                />
+                                (필수) 서비스 이용 약관에 동의합니다.
+                            </label>
+                        )}
+                    </div>
+
+                    {error && (
+                        <div className="auth-error text-xs text-red-400 bg-red-500/10 border border-red-500/40 rounded-md px-3 py-2">
+                            {error}
+                        </div>
+                    )}
+
+                    <button
+                        type="submit"
+                        className="auth-submit w-full mt-2 rounded-lg bg-emerald-500 py-2.5 text-sm font-semibold text-slate-900 hover:bg-emerald-400 transition shadow-md"
+                    >
+                        {mode === "login" ? "로그인" : "회원가입"}
+                    </button>
+
+                    <button
+                        type="button"
+                        className="auth-toggle w-full text-xs text-slate-300 mt-3 hover:text-white"
+                        onClick={() =>
+                            setMode((prev) => (prev === "login" ? "register" : "login"))
+                        }
+                    >
+                        {mode === "login"
+                            ? "아직 계정이 없다면? 회원가입 하기"
+                            : "이미 계정이 있다면? 로그인 하기"}
+                    </button>
+                </form>
             </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
+        </div>
+    );
 };
 
 export default AuthPage;
