@@ -10,10 +10,7 @@ const Header: React.FC = () => {
     return (
         <header className="header">
             <div className="header__inner">
-                <div
-                    className="header__logo"
-                    onClick={() => navigate("/")}
-                >
+                <div className="header__logo" onClick={() => navigate("/")}>
                     WSDflix
                 </div>
 

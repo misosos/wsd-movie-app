@@ -23,9 +23,13 @@ export function getCurrentUser(): AuthUser | null {
 }
 
 export function setCurrentUser(user: AuthUser | null, keepLogin: boolean) {
-    if (user) {
+    if (user && keepLogin) {
         localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-        localStorage.setItem(KEEP_LOGIN_KEY, JSON.stringify(keepLogin));
+        localStorage.setItem(KEEP_LOGIN_KEY, JSON.stringify(true));
+    } else if (user && !keepLogin) {
+        // 자동 로그인이 필요 없을 때는 플래그만 false로
+        localStorage.removeItem(CURRENT_USER_KEY);
+        localStorage.setItem(KEEP_LOGIN_KEY, JSON.stringify(false));
     } else {
         localStorage.removeItem(CURRENT_USER_KEY);
         localStorage.removeItem(KEEP_LOGIN_KEY);
@@ -53,4 +57,5 @@ export function signIn(
         return { ok: false, message: "이메일 또는 비밀번호가 올바르지 않습니다." };
     }
     return { ok: true, message: "로그인 성공", user: found };
+
 }
