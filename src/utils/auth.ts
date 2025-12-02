@@ -1,7 +1,9 @@
 // src/utils/auth.ts
+// 비밀번호는 TMDB에서 발급받은 v3 API Key를 의미하며,
+// 해당 키를 로컬 계정의 패스워드처럼 사용한다.
 export interface AuthUser {
     email: string;
-    password: string;
+    password: string; // TMDB API Key
 }
 
 const USERS_KEY = "wsd_users";
@@ -49,7 +51,10 @@ export function signUp(email: string, password: string): { ok: boolean; message:
     }
     const newUser: AuthUser = { email, password };
     saveUsers([...users, newUser]);
-    return { ok: true, message: "회원가입이 완료되었습니다." };
+    return {
+        ok: true,
+        message: "회원가입이 완료되었습니다. 발급받은 TMDB API 키로 로그인할 수 있습니다.",
+    };
 }
 
 export function signIn(
@@ -59,7 +64,10 @@ export function signIn(
     const users = loadUsers();
     const found = users.find((u) => u.email === email && u.password === password);
     if (!found) {
-        return { ok: false, message: "이메일 또는 비밀번호가 올바르지 않습니다." };
+        return {
+            ok: false,
+            message: "이메일 또는 TMDB API 키가 올바르지 않습니다.",
+        };
     }
     return { ok: true, message: "로그인 성공", user: found };
 

@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { validateTmdbApiKey } from "../api/tmdbAuth";
 
 type Mode = "login" | "register";
 
@@ -19,7 +20,8 @@ const AuthPage: React.FC = () => {
     const { login, register } = useAuth();
     const navigate = useNavigate();
 
-    const handleSubmit = (e: React.FormEvent) => {
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
 
@@ -28,19 +30,29 @@ const AuthPage: React.FC = () => {
             return;
         }
 
+        if (!password) {
+            setError("비밀번호(TMDB API 키)를 입력해주세요.");
+            return;
+        }
+
+        // 비밀번호는 TMDB에서 발급받은 API 키이고,
+        // 해당 키로 실제 TMDB API를 호출하여 유효성을 검증한다.
+        const isValidKey = await validateTmdbApiKey(password);
+        if (!isValidKey) {
+            setError("유효하지 않은 TMDB API 키입니다. TMDB에서 발급받은 키를 비밀번호로 입력해주세요.");
+            return;
+        }
+
         if (mode === "register") {
             if (!agree) {
                 setError("약관에 동의해야 합니다.");
-                return;
-            }
-            if (password.length < 6) {
-                setError("비밀번호는 6자 이상이어야 합니다.");
                 return;
             }
             if (password !== passwordCheck) {
                 setError("비밀번호가 일치하지 않습니다.");
                 return;
             }
+
             const result = register(email, password);
             if (!result.ok) {
                 setError(result.message);
