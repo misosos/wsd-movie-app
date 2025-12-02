@@ -18,19 +18,24 @@ function saveUsers(users: AuthUser[]) {
 }
 
 export function getCurrentUser(): AuthUser | null {
+    // "로그인 상태 유지"가 설정된 경우에만 자동 로그인 허용
+    const keep = localStorage.getItem(KEEP_LOGIN_KEY);
+    if (keep !== "true") {
+        return null;
+    }
+
     const stored = localStorage.getItem(CURRENT_USER_KEY);
     return stored ? (JSON.parse(stored) as AuthUser) : null;
 }
 
 export function setCurrentUser(user: AuthUser | null, keepLogin: boolean) {
     if (user && keepLogin) {
+        // ✅ 로그인 성공 + "로그인 상태 유지" 체크된 경우에만 현재 유저를 저장
         localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-        localStorage.setItem(KEEP_LOGIN_KEY, JSON.stringify(true));
-    } else if (user && !keepLogin) {
-        // 자동 로그인이 필요 없을 때는 플래그만 false로
-        localStorage.removeItem(CURRENT_USER_KEY);
-        localStorage.setItem(KEEP_LOGIN_KEY, JSON.stringify(false));
+        localStorage.setItem(KEEP_LOGIN_KEY, "true");
     } else {
+        // 로그아웃하거나, 로그인 유지 옵션을 끄고 로그인한 경우
+        // 새로고침 시 자동 로그인되지 않도록 저장값을 지움
         localStorage.removeItem(CURRENT_USER_KEY);
         localStorage.removeItem(KEEP_LOGIN_KEY);
     }
