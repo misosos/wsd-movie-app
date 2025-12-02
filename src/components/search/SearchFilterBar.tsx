@@ -28,9 +28,6 @@ const LANGUAGE_OPTIONS = [
     { value: "all", label: "언어 (전체)" },
     { value: "ko", label: "한국어" },
     { value: "en", label: "영어" },
-    { value: "ja", label: "일본어" },
-    { value: "zh", label: "중국어" },
-    { value: "fr", label: "프랑스어" },
 ];
 
 const SearchFilterBar: React.FC<SearchFilterBarProps> = ({

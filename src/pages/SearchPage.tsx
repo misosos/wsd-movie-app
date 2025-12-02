@@ -56,7 +56,7 @@ const SearchPage: React.FC = () => {
     const [selectedGenreId, setSelectedGenreId] = useState<number | "all">("all");
     const [minRating, setMinRating] = useState<number>(0);
     const [sortBy, setSortBy] = useState<SortOption>("popularity.desc");
-    const [language, setLanguage] = useState<"all" | string>("all"); // 언어 필터
+    const [language, setLanguage] = useState<"all" | "ko" | "en">("ko"); // 언어 필터 (기본: 한국어)
 
     // Top 버튼 표시 여부
     const [showTopButton, setShowTopButton] = useState(false);
@@ -152,12 +152,11 @@ const SearchPage: React.FC = () => {
             );
         }
 
-        // 언어 필터 (TMDB original_language 기준)
+        // 언어 필터 (TMDB original_language 기준) - 전체 / ko / en
         if (language !== "all") {
-            const targetLang = language.toLowerCase();
             data = data.filter((movie) => {
                 const originalLanguage = (movie.original_language ?? "").toLowerCase();
-                return originalLanguage === targetLang;
+                return originalLanguage === language;
             });
         }
 
