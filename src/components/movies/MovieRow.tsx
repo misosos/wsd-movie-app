@@ -13,10 +13,10 @@ interface MovieRowProps {
 
 const MovieRow: React.FC<MovieRowProps> = ({ title, movies, loading, error }) => {
     return (
-        <section className="mb-10">
-            <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-white">{title}</h2>
-            </div>
+        <section className="mb-8 md:mb-10">
+            <h2 className="mb-3 md:mb-4 text-lg md:text-xl font-semibold text-white">
+                {title}
+            </h2>
 
             {loading && (
                 <div className="flex justify-center py-8">
@@ -37,10 +37,17 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, loading, error }) =>
             )}
 
             {!loading && !error && movies.length > 0 && (
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                    {movies.map((movie) => (
-                        <MovieCard key={movie.id} movie={movie} />
-                    ))}
+                <div className="relative">
+                    {/* 가로 스크롤 행 */}
+                    <div className="movie-row-scroll flex gap-3 md:gap-4 overflow-x-auto pb-2">
+                        {movies.map((movie) => (
+                            <MovieCard key={movie.id} movie={movie} />
+                        ))}
+                    </div>
+
+                    {/* 좌우 그라데이션 효과 (옵션) */}
+                    <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-black to-transparent" />
+                    <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-black to-transparent" />
                 </div>
             )}
         </section>
