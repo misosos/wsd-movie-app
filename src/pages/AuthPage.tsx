@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { validateTmdbApiKey } from "../api/tmdbAuth";
+import toast from "react-hot-toast";
 
 type Mode = "login" | "register";
 
@@ -58,7 +59,8 @@ const AuthPage: React.FC = () => {
                 setError(result.message);
                 return;
             }
-            alert(result.message);
+            // 회원가입 성공 토스트
+            toast.success(result.message || "회원가입이 완료되었습니다.");
             // 회원가입 후 로그인 모드로 전환
             setMode("login");
             setPassword("");
@@ -72,7 +74,8 @@ const AuthPage: React.FC = () => {
             setError(result.message);
             return;
         }
-        alert(result.message);
+        // 로그인 성공 토스트
+        toast.success(result.message || "로그인에 성공했습니다.");
         navigate("/");
     };
 
