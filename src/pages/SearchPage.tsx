@@ -6,6 +6,7 @@ import { getMovieGenres, getPopularMovies } from "../api/tmdb";
 import SearchFilterBar from "../components/search/SearchFilterBar";
 import SearchResultsGrid from "../components/search/SearchResultsGrid";
 import ScrollTopButton from "../components/popular/ScrollTopButton";
+import MovieDetailModal from "../components/movies/MovieDetailModal";
 
 type Genre = {
     id: number;
@@ -59,6 +60,7 @@ const SearchPage: React.FC = () => {
 
     // Top 버튼 표시 여부
     const [showTopButton, setShowTopButton] = useState(false);
+    const [selectedMovie, setSelectedMovie] = useState<TmdbMovieWithMeta | null>(null);
 
     // ===== 장르 로딩 =====
     useEffect(() => {
@@ -229,6 +231,23 @@ const SearchPage: React.FC = () => {
                 error={error}
                 hasMore={hasMore}
                 movies={filteredAndSorted}
+                onClickMovie={(movie) =>
+                    setSelectedMovie(movie as TmdbMovieWithMeta)
+                }
+            />
+
+            {/* 영화 상세 모달 */}
+            <MovieDetailModal
+                isOpen={!!selectedMovie}
+                movie={selectedMovie}
+                onClose={() => setSelectedMovie(null)}
+                genreNames={
+                    selectedMovie
+                        ? genres
+                              .filter((g) => selectedMovie.genre_ids?.includes(g.id))
+                              .map((g) => g.name)
+                        : []
+                }
             />
 
             {/* Top 버튼 */}

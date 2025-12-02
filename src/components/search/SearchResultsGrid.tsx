@@ -9,6 +9,7 @@ interface SearchResultsGridProps {
     error: string | null;
     hasMore: boolean;
     movies: TmdbMovie[];
+    onClickMovie?: (movie: TmdbMovie) => void;
 }
 
 const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
@@ -16,8 +17,8 @@ const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
     error,
     hasMore,
     movies,
+    onClickMovie,
 }) => {
-    // 같은 영화가 여러 번 넘어오는 경우를 대비해 id 기준으로 한 번 더 중복 제거
     const uniqueMovies = (() => {
         const seen = new Set<number>();
         return movies.filter((movie) => {
@@ -27,7 +28,6 @@ const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
         });
     })();
 
-    // 에러
     if (error && !loading) {
         return (
             <div className="mt-6 rounded-md bg-red-500/10 px-4 py-3 text-sm text-red-400">
@@ -36,7 +36,6 @@ const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
         );
     }
 
-    // 결과 없음
     if (!loading && uniqueMovies.length === 0) {
         return (
             <p className="mt-6 text-center text-sm text-slate-400">
@@ -49,7 +48,11 @@ const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
         <section className="mt-4">
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
                 {uniqueMovies.map((movie) => (
-                    <MovieCard key={movie.id} movie={movie} />
+                    <MovieCard
+                        key={movie.id}
+                        movie={movie}
+                        onClick={() => onClickMovie?.(movie)}
+                    />
                 ))}
             </div>
 
