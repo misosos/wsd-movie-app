@@ -5,9 +5,12 @@ import {
     getNowPlayingMovies,
     getPopularMovies,
     getTopRatedMovies,
+    getUpcomingMovies,
 } from "../api/tmdb";
 import MovieRow from "../components/movies/MovieRow";
+import HeroMovieBanner from "../components/movies/HeroMovieBanner";
 import { useAuth } from "../context/AuthContext";
+import MovieDetailModal from "../components/movies/MovieDetailModal";
 
 const HomePage: React.FC = () => {
     const { user } = useAuth();
@@ -16,9 +19,14 @@ const HomePage: React.FC = () => {
     const [nowPlaying, setNowPlaying] = useState<TmdbMovie[]>([]);
     const [popular, setPopular] = useState<TmdbMovie[]>([]);
     const [topRated, setTopRated] = useState<TmdbMovie[]>([]);
+    const [upcoming, setUpcoming] = useState<TmdbMovie[]>([]);
+
+    const featuredMovie =
+        nowPlaying[0] || popular[0] || topRated[0] || upcoming[0];
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [selectedMovie, setSelectedMovie] = useState<TmdbMovie | null>(null);
 
     useEffect(() => {
         if (!apiKey) {
@@ -33,10 +41,11 @@ const HomePage: React.FC = () => {
                 setLoading(true);
                 setError(null);
 
-                const [nowPlayingRes, popularRes, topRatedRes] = await Promise.all([
+                const [nowPlayingRes, popularRes, topRatedRes, upcomingRes] = await Promise.all([
                     getNowPlayingMovies(apiKey, 1),
                     getPopularMovies(apiKey, 1),
                     getTopRatedMovies(apiKey, 1),
+                    getUpcomingMovies(apiKey, 1),
                 ]);
 
                 if (!isMounted) return;
@@ -44,6 +53,7 @@ const HomePage: React.FC = () => {
                 setNowPlaying(nowPlayingRes.data.results);
                 setPopular(popularRes.data.results);
                 setTopRated(topRatedRes.data.results);
+                setUpcoming(upcomingRes.data.results);
             } catch (err) {
                 console.error(err);
                 if (isMounted) {
@@ -56,7 +66,7 @@ const HomePage: React.FC = () => {
             }
         };
 
-        fetchMovies();
+        void fetchMovies();
 
         return () => {
             isMounted = false;
@@ -64,24 +74,49 @@ const HomePage: React.FC = () => {
     }, [apiKey]);
 
     return (
-        <div className="home-page">
+        <div className="home-page space-y-8">
+            {/* 넷플릭스 스타일 메인 히어로 배너 */}
+            {featuredMovie && (
+                <HeroMovieBanner
+                    movie={featuredMovie}
+                    onClickDetails={() => setSelectedMovie(featuredMovie)}
+                />
+            )}
+
+            {/* 영화 리스트 섹션들 */}
             <MovieRow
                 title="현재 상영작"
                 movies={nowPlaying}
                 loading={loading && nowPlaying.length === 0}
                 error={error}
+                onClickMovie={(movie) => setSelectedMovie(movie)}
             />
             <MovieRow
                 title="인기 영화"
                 movies={popular}
                 loading={loading && popular.length === 0}
                 error={error}
+                onClickMovie={(movie) => setSelectedMovie(movie)}
             />
             <MovieRow
                 title="최고 평점 영화"
                 movies={topRated}
                 loading={loading && topRated.length === 0}
                 error={error}
+                onClickMovie={(movie) => setSelectedMovie(movie)}
+            />
+            <MovieRow
+                title="개봉 예정작"
+                movies={upcoming}
+                loading={loading && upcoming.length === 0}
+                error={error}
+                onClickMovie={(movie) => setSelectedMovie(movie)}
+            />
+
+            <MovieDetailModal
+                isOpen={!!selectedMovie}
+                movie={selectedMovie}
+                onClose={() => setSelectedMovie(null)}
             />
         </div>
     );
