@@ -7,6 +7,7 @@ const Header: React.FC = () => {
     const navigate = useNavigate();
     const { user, isLoggedIn, logout } = useAuth();
     const [showEmail, setShowEmail] = useState(false);
+    const [isNavOpen, setIsNavOpen] = useState(false);
 
     const navLinkClass = ({
                               isActive,
@@ -21,17 +22,22 @@ const Header: React.FC = () => {
                 : "text-slate-300 hover:text-white hover:border-b-[#e50914]/80",
         ].join(" ");
 
+    const handleNavToggle = () => {
+        setIsNavOpen((prev) => !prev);
+    };
+
     const handleLogout = () => {
         setShowEmail(false);
+        setIsNavOpen(false);
         logout();
         navigate("/signin");
     };
 
     return (
-        <header className="fixed inset-x-0 top-0 z-30 bg-gradient-to-b from-black/90 via-black/70 to-transparent">
+        <header className="fixed inset-x-0 top-0 z-30 bg-black/95 md:bg-gradient-to-b md:from-black/90 md:via-black/70 md:to-transparent">
             <div className="flex w-full items-center justify-between px-4 py-3 md:px-8 md:py-4">
                 {/* 로고 / 서비스명 */}
-                <Link to="/" className="flex items-center gap-2">
+                <Link to="/" className="flex items-center gap-2" onClick={() => setIsNavOpen(false)}>
                     <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-[#e50914] text-lg font-extrabold text-white md:h-8 md:w-8">
                         W
                     </div>
@@ -57,7 +63,7 @@ const Header: React.FC = () => {
                 </nav>
 
                 {/* 우측: 로그인 / 유저 정보 */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 md:gap-3">
                     {isLoggedIn && user ? (
                         <>
                             {/* 프로필 아바타 아이콘 (이메일 첫 글자, 클릭 시 아이디 토글) */}
@@ -71,7 +77,7 @@ const Header: React.FC = () => {
                                 {user.email?.charAt(0) ?? "U"}
                             </button>
                             {showEmail && (
-                                <span className="hidden max-w-[160px] truncate text-xs text-slate-200 md:inline md:text-sm">
+                                <span className="max-w-[120px] truncate text-[11px] text-slate-200 md:max-w-[160px] md:text-sm">
                                     {user.email}
                                 </span>
                             )}
@@ -86,14 +92,70 @@ const Header: React.FC = () => {
                     ) : (
                         <button
                             type="button"
-                            onClick={() => navigate("/signin")}
+                            onClick={() => {
+                                setIsNavOpen(false);
+                                navigate("/signin");
+                            }}
                             className="rounded bg-[#e50914] px-3 py-1.5 text-xs md:text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#b20710]"
                         >
                             로그인
                         </button>
                     )}
+
+                    {/* 모바일 메뉴 토글 버튼 (md 미만에서만 표시) */}
+                    <button
+                        type="button"
+                        onClick={handleNavToggle}
+                        className="flex h-8 w-8 items-center justify-center rounded md:hidden focus:outline-none focus:ring-2 focus:ring-[#e50914] focus:ring-offset-2 focus:ring-offset-black"
+                        aria-label="메뉴 열기"
+                    >
+                        <span className="block h-[2px] w-4 bg-white rounded-sm" />
+                        <span className="sr-only">{isNavOpen ? "메뉴 닫기" : "메뉴 열기"}</span>
+                    </button>
                 </div>
             </div>
+            {isNavOpen && (
+                <nav className="md:hidden border-t border-white/10 px-4 pt-2 pb-3 text-sm bg-black/95">
+                    <ul className="flex flex-col gap-2">
+                        <li>
+                            <NavLink
+                                to="/"
+                                className={navLinkClass}
+                                onClick={() => setIsNavOpen(false)}
+                            >
+                                홈
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink
+                                to="/popular"
+                                className={navLinkClass}
+                                onClick={() => setIsNavOpen(false)}
+                            >
+                                대세 콘텐츠
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink
+                                to="/search"
+                                className={navLinkClass}
+                                onClick={() => setIsNavOpen(false)}
+                            >
+                                찾아보기
+                            </NavLink>
+                        </li>
+                        <li>
+                            <NavLink
+                                to="/wishlist"
+                                className={navLinkClass}
+                                onClick={() => setIsNavOpen(false)}
+                            >
+                                내가 찜한 리스트
+                            </NavLink>
+                        </li>
+                    </ul>
+                </nav>
+            )}
         </header>
     );
 };
