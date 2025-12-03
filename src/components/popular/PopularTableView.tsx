@@ -1,5 +1,5 @@
 // src/components/popular/PopularTableView.tsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import type { TmdbMovie } from "../../types/tmdb";
 import Spinner from "../common/Spinner";
 
@@ -17,7 +17,6 @@ interface PopularTableViewProps {
 }
 
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w342";
-const MOVIES_PER_TABLE_PAGE = 10;
 
 const PopularTableView: React.FC<PopularTableViewProps> = ({
                                                                movies,
@@ -31,11 +30,33 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                                                onToggleWishlist,
                                                                isInWishlist,
                                                            }) => {
-    const visibleMovies = movies.slice(0, MOVIES_PER_TABLE_PAGE);
+    const [itemsPerPage, setItemsPerPage] = useState<number>(6);
+
+    useEffect(() => {
+        const updateItemsPerPage = () => {
+            const width = window.innerWidth;
+            if (width < 640) {
+                // 모바일: 한 화면에 6개 정도
+                setItemsPerPage(6);
+            } else if (width < 1024) {
+                // 태블릿: 8개
+                setItemsPerPage(8);
+            } else {
+                // 데스크탑: 10개
+                setItemsPerPage(10);
+            }
+        };
+
+        updateItemsPerPage();
+        window.addEventListener("resize", updateItemsPerPage);
+        return () => window.removeEventListener("resize", updateItemsPerPage);
+    }, []);
+
+    const visibleMovies = movies.slice(0, itemsPerPage);
 
     return (
         // 섹션 자체는 overflow 보이도록 + 위 여백 조금 줄이기
-        <section className="mt-4 overflow-hidden">
+        <section className="mt-2 overflow-hidden">
             {loading && (
                 <div className="flex justify-center py-8">
                     <Spinner />
@@ -58,7 +79,7 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                 <>
                     {/* 카드 패널 전체 높이/패딩을 조금 더 컴팩트하게 */}
                     <div className="mx-auto max-w-4xl rounded-xl bg-[#141414] px-2 py-2 shadow-lg overflow-hidden">
-                        <div className="grid grid-cols-2 gap-x-3 gap-y-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                        <div className="grid grid-cols-2 gap-x-2 gap-y-2 sm:grid-cols-3 sm:gap-x-3 sm:gap-y-3 md:grid-cols-4 lg:grid-cols-5">
                             {visibleMovies.map((movie, idx) => {
                                 const title = movie.title || movie.name || "제목 없음";
                                 const posterUrl = movie.poster_path
@@ -85,7 +106,7 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                         }}
                                     >
                                         {/* 포스터 카드: 폭/높이 살짝 더 줄임 */}
-                                        <div className="relative aspect-[2/3] w-full max-w-[125px] overflow-hidden rounded-md bg-zinc-900">
+                                        <div className="relative aspect-[2/3] w-full max-w-[72px] sm:max-w-[88px] md:max-w-[110px] overflow-hidden rounded-md bg-zinc-900">
                                             {posterUrl ? (
                                                 <img
                                                     src={posterUrl}
@@ -103,7 +124,7 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
 
                                             {/* 페이지 내 순위 뱃지 */}
                                             <div className="absolute left-1.5 top-1.5 rounded bg-black/70 px-1.5 py-0.5 text-[9px] font-semibold text-slate-100 group-hover:bg-[#e50914] group-hover:text-white">
-                                                #{(page - 1) * MOVIES_PER_TABLE_PAGE + idx + 1}
+                                                #{(page - 1) * itemsPerPage + idx + 1}
                                             </div>
 
                                             {/* 포스터 위 액션 버튼 */}
@@ -163,7 +184,7 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                         </div>
 
                                         {/* 제목 + 평점: 폰트 사이즈 살짝 축소 */}
-                                        <div className="mt-1.5 w-full max-w-[125px] text-[11px] text-slate-100 md:text-[12px]">
+                                        <div className="mt-1.5 w-full max-w-[72px] sm:max-w-[88px] md:max-w-[110px] text-[11px] text-slate-100 md:text-[12px]">
                                             <p className="truncate font-medium" title={title}>
                                                 {title}
                                             </p>
