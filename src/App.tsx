@@ -2,6 +2,7 @@ import AppRouter from "./router/AppRouter";
 import Header from "./components/layout/Header";
 import { Toaster } from "react-hot-toast";
 
+
 function App() {
   return (
       <div className="app">
