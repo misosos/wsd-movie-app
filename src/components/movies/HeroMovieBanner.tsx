@@ -49,14 +49,16 @@ const HeroMovieBanner: React.FC<HeroMovieBannerProps> = ({
 
                     <div className="flex flex-wrap gap-2 pt-2 md:pt-4">
                         <button className="flex items-center gap-2 rounded bg-white px-4 py-2 text-xs font-semibold text-black shadow hover:bg-slate-200 md:text-sm">
-                            재생
+                            <i className="fas fa-play text-[11px] md:text-sm" />
+                            <span>재생</span>
                         </button>
                         <button
                             type="button"
                             className="flex items-center gap-2 rounded bg-white/20 px-4 py-2 text-xs font-semibold text-white backdrop-blur hover:bg-white/30 md:text-sm"
                             onClick={onClickDetails}
                         >
-                            상세 정보
+                            <i className="fas fa-info-circle text-[11px] md:text-sm" />
+                            <span>상세 정보</span>
                         </button>
                     </div>
                 </div>

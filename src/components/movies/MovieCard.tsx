@@ -59,7 +59,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
                                         (inWishlist ? "text-red-400" : "text-slate-200")
                                     }
                                 >
-                                    {inWishlist ? "♥" : "♡"}
+                                    <i className={inWishlist ? "fas fa-heart" : "far fa-heart"} />
                                 </span>
                                 <span className="truncate">
                                     {inWishlist ? "찜 해제" : "찜하기"}
@@ -79,9 +79,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
                             >
                                 {/* 깔끔한 정보 아이콘 (원 안의 i) */}
                                 <span className="inline-flex h-3 w-3 items-center justify-center">
-                                    <span className="flex h-3 w-3 items-center justify-center rounded-full border border-white/70 text-[9px] leading-none">
-                                        i
-                                    </span>
+                                    <i className="fas fa-info-circle text-[11px]" />
                                 </span>
                                 <span className="truncate">상세정보</span>
                             </button>

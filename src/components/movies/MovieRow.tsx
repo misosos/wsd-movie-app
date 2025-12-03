@@ -7,6 +7,7 @@ import { useWishlist } from "../../context/WishlistContext";
 
 interface MovieRowProps {
     title: string;
+    iconClass?: string;
     movies: TmdbMovie[];
     loading: boolean;
     error?: string | null;
@@ -15,6 +16,7 @@ interface MovieRowProps {
 
 const MovieRow: React.FC<MovieRowProps> = ({
                                                title,
+                                               iconClass,
                                                movies,
                                                loading,
                                                error,
@@ -45,8 +47,11 @@ const MovieRow: React.FC<MovieRowProps> = ({
 
     return (
         <section className="mb-8 md:mb-10">
-            <h2 className="mb-3 md:mb-4 text-lg md:text-xl font-semibold text-white">
-                {title}
+            <h2 className="mb-3 md:mb-4 flex items-center gap-2 text-lg md:text-xl font-semibold text-white">
+                {iconClass && (
+                    <i className={`${iconClass} text-sm md:text-base text-red-500`} />
+                )}
+                <span>{title}</span>
             </h2>
 
             {loading && (
@@ -77,14 +82,14 @@ const MovieRow: React.FC<MovieRowProps> = ({
                                 onClick={handlePrev}
                                 className="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-xs text-white hover:bg-black/70"
                             >
-                                {"<"}
+                                <i className="fas fa-chevron-left" />
                             </button>
                             <button
                                 type="button"
                                 onClick={handleNext}
                                 className="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-xs text-white hover:bg-black/70"
                             >
-                                {">"}
+                                <i className="fas fa-chevron-right" />
                             </button>
                         </>
                     )}

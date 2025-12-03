@@ -104,7 +104,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({
                                     className="inline-flex items-center gap-2 rounded bg-red-600 px-3 py-1.5 text-xs font-semibold text-white shadow hover:bg-red-700 md:text-sm"
                                 >
                                     <span className={inWishlist ? "text-red-100" : "text-red-100"}>
-                                        {inWishlist ? "♥" : "♡"}
+                                        <i className={inWishlist ? "fas fa-heart" : "far fa-heart"} />
                                     </span>
                                     <span>{inWishlist ? "찜 해제" : "찜하기"}</span>
                                 </button>
