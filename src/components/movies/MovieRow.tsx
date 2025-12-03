@@ -25,8 +25,19 @@ const MovieRow: React.FC<MovieRowProps> = ({
     const { toggleWishlist, isInWishlist } = useWishlist();
 
     const getItemsPerPage = () => {
-        if (typeof window === "undefined") return 6;
-        return window.innerWidth < 640 ? 3 : 6; // 모바일에서는 3개, 그 이상은 6개
+        if (typeof window === "undefined") return 5;
+        const width = window.innerWidth;
+
+        if (width < 640) {
+            // 모바일: 한 페이지에 3개
+            return 3;
+        }
+        if (width < 1024) {
+            // 태블릿/중간 화면: 한 페이지에 4개
+            return 4;
+        }
+        // 데스크탑 이상: 한 페이지에 7개
+        return 7;
     };
 
     const [itemsPerPage, setItemsPerPage] = useState<number>(getItemsPerPage());
@@ -35,6 +46,7 @@ const MovieRow: React.FC<MovieRowProps> = ({
     useEffect(() => {
         const handleResize = () => {
             setItemsPerPage(getItemsPerPage());
+            setPage(0);
         };
 
         window.addEventListener("resize", handleResize);
@@ -123,14 +135,14 @@ const MovieRow: React.FC<MovieRowProps> = ({
                     {/* 한 페이지 분량의 영화 카드들: translateX로 부드럽게 슬라이드 */}
                     <div className="overflow-hidden px-6">
                         <div
-                            className="flex gap-3 md:gap-4 transition-transform duration-500 ease-out"
+                            className="flex gap-3 md:gap-4 lg:gap-7 xl:gap-9 transition-transform duration-500 ease-out"
                             style={{ transform: `translateX(-${currentPage * 100}%)` }}
                         >
                             {pageChunks.map((chunk, pageIndex) => (
                                 <div
                                     key={pageIndex}
                                     className={
-                                        "flex min-w-full gap-3 md:gap-4 transform-gpu transition-transform duration-500 ease-out " +
+                                        "flex min-w-full gap-3 md:gap-4 lg:gap-7 xl:gap-9 transform-gpu transition-transform duration-500 ease-out " +
                                         (pageIndex === currentPage
                                             ? "scale-100 opacity-100"
                                             : "scale-95 md:scale-90 opacity-70")
