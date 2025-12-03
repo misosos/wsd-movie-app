@@ -53,7 +53,7 @@ const PopularPage: React.FC = () => {
             }
         };
 
-        fetchTable();
+        void fetchTable();
     }, [apiKey, viewMode, tablePage]);
 
     // ===== Infinite 뷰 데이터 로딩 =====
@@ -76,8 +76,7 @@ const PopularPage: React.FC = () => {
             }
         };
 
-        fetchInfinite();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        void fetchInfinite();
     }, [apiKey, viewMode, infinitePage]);
 
     // 뷰 모드 전환
@@ -129,6 +128,23 @@ const PopularPage: React.FC = () => {
     const handleScrollTop = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
+
+    // 테이블 뷰에서는 페이지 전체 스크롤 비활성화
+    useEffect(() => {
+        if (viewMode === "table") {
+            document.body.style.overflow = "hidden";
+            document.documentElement.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+            document.documentElement.style.overflow = "";
+        }
+
+        // 언마운트 시 또는 다른 페이지로 이동 시 스크롤 상태 복원
+        return () => {
+            document.body.style.overflow = "";
+            document.documentElement.style.overflow = "";
+        };
+    }, [viewMode]);
 
     return (
         <div className="min-h-screen">

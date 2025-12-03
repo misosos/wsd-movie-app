@@ -40,32 +40,14 @@ const PopularHeader: React.FC<PopularHeaderProps> = ({
                     }
                     aria-label="테이블 뷰"
                 >
-                    {/* 테이블 / 그리드 아이콘 */}
-                    <span className="inline-grid h-4 w-4 grid-cols-2 grid-rows-2 gap-[1px]">
-                        <span
-                            className={
-                                "rounded-[2px] " +
-                                (isTable ? "bg-white" : "bg-slate-400/80")
-                            }
-                        />
-                        <span
-                            className={
-                                "rounded-[2px] " +
-                                (isTable ? "bg-white" : "bg-slate-500/80")
-                            }
-                        />
-                        <span
-                            className={
-                                "rounded-[2px] " +
-                                (isTable ? "bg-white" : "bg-slate-500/80")
-                            }
-                        />
-                        <span
-                            className={
-                                "rounded-[2px] " +
-                                (isTable ? "bg-white" : "bg-slate-600/80")
-                            }
-                        />
+                    <i
+                        className={
+                            "fas fa-table text-base md:text-lg " +
+                            (isTable ? "text-white" : "text-slate-300")
+                        }
+                        aria-hidden="true"
+                    />
+                    <span className="hidden text-xs md:inline">
                     </span>
                 </button>
 
@@ -81,18 +63,14 @@ const PopularHeader: React.FC<PopularHeaderProps> = ({
                     }
                     aria-label="무한 스크롤 뷰"
                 >
-                    {/* 스크롤 아이콘 (리스트 + 아래 화살표) */}
-                    <span className="flex h-4 w-4 flex-col items-center justify-center">
-                        <span className="h-[2px] w-full rounded bg-slate-400/80" />
-                        <span className="mt-[2px] h-[2px] w-3/4 rounded bg-slate-500/80" />
-                        <span className="mt-[3px] inline-flex items-center justify-center text-[9px]">
-                            <span
-                                className={
-                                    "inline-block h-0 w-0 border-l-[4px] border-r-[4px] border-t-[6px] border-l-transparent border-r-transparent " +
-                                    (isInfinite ? "border-t-white" : "border-t-slate-400/80")
-                                }
-                            />
-                        </span>
+                    <i
+                        className={
+                            "fas fa-stream text-base md:text-lg " +
+                            (isInfinite ? "text-white" : "text-slate-300")
+                        }
+                        aria-hidden="true"
+                    />
+                    <span className="hidden text-xs md:inline">
                     </span>
                 </button>
             </div>
