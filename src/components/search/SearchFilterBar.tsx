@@ -33,18 +33,18 @@ const LANGUAGE_OPTIONS: { value: LanguageFilter; label: string }[] = [
 ];
 
 const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
-    genres,
-    genreLoading,
-    selectedGenreId,
-    onChangeGenre,
-    minRating,
-    onChangeMinRating,
-    sortBy,
-    onChangeSortBy,
-    language,
-    onChangeLanguage,
-    onResetFilters,
-}) => {
+                                                             genres,
+                                                             genreLoading,
+                                                             selectedGenreId,
+                                                             onChangeGenre,
+                                                             minRating,
+                                                             onChangeMinRating,
+                                                             sortBy,
+                                                             onChangeSortBy,
+                                                             language,
+                                                             onChangeLanguage,
+                                                             onResetFilters,
+                                                         }) => {
     return (
         <div className="mb-6 space-y-4">
             {/* 데모 스타일 필터 바 */}
