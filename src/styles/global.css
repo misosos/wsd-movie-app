@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+/* 전체 레이아웃 기본값 */
+html,
+body,
+#root {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background-color: #050509; /* 혹시 App 배경이 안 먹는 경우 대비 */
+    color: #f9fafb;           /* text-slate-50 느낌 */
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.auth-page {
+    perspective: 800px; /* 값이 작을수록 3D 왜곡이 강해짐 */
+    transform-style: preserve-3d;
+}
+
+:root {
+    --color-accent: #e50914;
+    --color-accent-dark: #b20710;
+}
+
+::selection {
+    background: rgba(229, 9, 20, 0.8);
+    color: #f9fafb;
+}
+
+
+/* --- 기존 (은은한) pop-in 이 있었다고 가정하고, 그대로 유지 --- */
+@keyframes auth-pop-in {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* --- 더 동적인 버전: 파란 바에서 잡아당겨 올라오는 느낌 --- */
+@keyframes auth-pull-up {
+    0% {
+        opacity: 0;
+        transform:
+            translate3d(0, 140%, -260px)  /* 더 아래 + 더 뒤에서 시작 */
+            rotateX(32deg)                /* 위로 많이 젖혀진 상태 */
+            rotateY(-14deg)               /* 한쪽으로 틀어진 상태 */
+            scale(0.85);                  /* 더 작게 시작 */
+        filter: blur(5px);
+    }
+    40% {
+        opacity: 1;
+        transform:
+            translate3d(0, -24px, 70px)   /* 화면 앞으로 강하게 튀어나옴 */
+            rotateX(-8deg)                /* 반대로 살짝 젖혀짐 */
+            rotateY(8deg)                 /* 반대 방향으로 스윙 */
+            scale(1.08);                  /* 오버슛 크게 */
+        filter: blur(0);
+    }
+    70% {
+        transform:
+            translate3d(0, 6px, 12px)     /* 살짝 아래로 반동 + 약간 앞으로 */
+            rotateX(2deg)
+            rotateY(-3deg)
+            scale(0.99);
+    }
+    100% {
+        transform:
+            translate3d(0, 0, 0)          /* 최종 위치 */
+            rotateX(0deg)
+            rotateY(0deg)
+            scale(1);
+    }
+}
+
+/* AuthPage 전환에 사용할 클래스 */
+.auth-switch-pop {
+    animation: auth-pull-up 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+    transform-origin: center center;
+}
+
+/* Auth 카드 전체가 모드 전환 시 동적으로 등장하도록 하는 클래스 */
+.auth-card-switch {
+    animation: auth-pull-up 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+    transform-origin: center center;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+}
+
+/* ===========================
+   AuthPage: 로그인 / 회원가입 플립 전환
+   =========================== */
+
+/* 두 패널을 겹쳐놓는 컨테이너 */
+.auth-form-flip {
+    position: relative;
+    min-height: 220px;
+    perspective: 700px; /* 더 작은 값으로 3D 깊이를 강화 */
+}
+
+/* 로그인 / 회원가입 각각의 패널 공통 */
+.auth-panel {
+    position: absolute;
+    inset: 0;
+    transform-origin: top center;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    transform: rotateX(0deg) translateZ(0); /* 기본 상태 */
+    transition:
+        transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+        opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* 개별 패널 (앞/뒤 순서 제어) */
+.auth-panel--login {
+    z-index: 2;
+}
+.auth-panel--register {
+    z-index: 1;
+}
+
+/* 로그인 모드: 로그인 패널이 앞, 회원가입은 뒤로 살짝 접혀 대기 */
+.auth-form-flip.is-login .auth-panel--login {
+    transform: rotateX(0deg) translateZ(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+.auth-form-flip.is-login .auth-panel--register {
+    transform: rotateX(-105deg) translateY(-8px) translateZ(-40px); /* 위쪽 뒤로 접혀있는 3D 느낌 */
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 회원가입 모드:
+   - 로그인 패널이 아래로 접히며 사라지고
+   - 회원가입 패널이 위에서 펼쳐지며 등장 */
+.auth-form-flip.is-register .auth-panel--login {
+    transform: rotateX(105deg) translateY(8px) translateZ(-40px); /* 아래로 접히며 멀어지는 느낌 */
+    opacity: 0;
+    pointer-events: none;
+}
+.auth-form-flip.is-register .auth-panel--register {
+    transform: rotateX(0deg) translateZ(0);
+    opacity: 1;
+    pointer-events: auto;
+}
