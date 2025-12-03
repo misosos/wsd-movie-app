@@ -1,11 +1,12 @@
 // src/components/layout/Header.tsx
-import type React from "react";
+import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const Header: React.FC = () => {
     const navigate = useNavigate();
     const { user, isLoggedIn, logout } = useAuth();
+    const [showEmail, setShowEmail] = useState(false);
 
     const navLinkClass = ({
                               isActive,
@@ -19,6 +20,7 @@ const Header: React.FC = () => {
         ].join(" ");
 
     const handleLogout = () => {
+        setShowEmail(false);
         logout();
         navigate("/signin");
     };
@@ -56,14 +58,21 @@ const Header: React.FC = () => {
                 <div className="flex items-center gap-3">
                     {isLoggedIn && user ? (
                         <>
-                            {/* 프로필 아바타 아이콘 (이메일 첫 글자) */}
-                            <div
-                                className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-700 text-sm font-semibold uppercase text-white md:h-9 md:w-9"
+                            {/* 프로필 아바타 아이콘 (이메일 첫 글자, 클릭 시 아이디 토글) */}
+                            <button
+                                type="button"
+                                onClick={() => setShowEmail((prev) => !prev)}
+                                className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-700 text-sm font-semibold uppercase text-white md:h-9 md:w-9 focus:outline-none focus:ring-2 focus:ring-[#e50914] focus:ring-offset-2 focus:ring-offset-black"
                                 aria-label="프로필"
                                 title={user.email}
                             >
                                 {user.email?.charAt(0) ?? "U"}
-                            </div>
+                            </button>
+                            {showEmail && (
+                                <span className="hidden max-w-[160px] truncate text-xs text-slate-200 md:inline md:text-sm">
+                                    {user.email}
+                                </span>
+                            )}
                             <button
                                 type="button"
                                 onClick={handleLogout}
