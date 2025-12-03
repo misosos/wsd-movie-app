@@ -6,9 +6,13 @@ const HERO_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original";
 
 interface HeroMovieBannerProps {
     movie: TmdbMovie;
+    onClickDetails?: () => void; // 상세 정보 버튼 클릭 시 호출
 }
 
-const HeroMovieBanner: React.FC<HeroMovieBannerProps> = ({ movie }) => {
+const HeroMovieBanner: React.FC<HeroMovieBannerProps> = ({
+                                                             movie,
+                                                             onClickDetails,
+                                                         }) => {
     const title = movie.title || movie.name || "제목 없음";
     const overview = movie.overview;
     const backdropUrl = movie.backdrop_path
@@ -47,7 +51,11 @@ const HeroMovieBanner: React.FC<HeroMovieBannerProps> = ({ movie }) => {
                         <button className="flex items-center gap-2 rounded bg-white px-4 py-2 text-xs font-semibold text-black shadow hover:bg-slate-200 md:text-sm">
                             재생
                         </button>
-                        <button className="flex items-center gap-2 rounded bg-white/20 px-4 py-2 text-xs font-semibold text-white backdrop-blur hover:bg-white/30 md:text-sm">
+                        <button
+                            type="button"
+                            className="flex items-center gap-2 rounded bg-white/20 px-4 py-2 text-xs font-semibold text-white backdrop-blur hover:bg-white/30 md:text-sm"
+                            onClick={onClickDetails}
+                        >
                             상세 정보
                         </button>
                     </div>

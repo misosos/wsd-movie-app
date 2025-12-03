@@ -77,8 +77,13 @@ const MovieCard: React.FC<MovieCardProps> = ({
                                     onClick();
                                 }}
                             >
-                                <span className="text-xs">🔍</span>
-                                <span className="truncate">상세보기</span>
+                                {/* 깔끔한 정보 아이콘 (원 안의 i) */}
+                                <span className="inline-flex h-3 w-3 items-center justify-center">
+                                    <span className="flex h-3 w-3 items-center justify-center rounded-full border border-white/70 text-[9px] leading-none">
+                                        i
+                                    </span>
+                                </span>
+                                <span className="truncate">상세정보</span>
                             </button>
                         )}
                     </div>
