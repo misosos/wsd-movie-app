@@ -71,11 +71,18 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                 const inWishlist = isInWishlist ? isInWishlist(movie) : false;
 
                                 return (
-                                    <button
+                                    <div
                                         key={movie.id}
-                                        type="button"
                                         onClick={() => onClickMovie?.(movie)}
                                         className="group relative flex flex-col items-center text-center transition-transform duration-200 hover:scale-[1.02]"
+                                        role="button"
+                                        tabIndex={0}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter" || e.key === " ") {
+                                                e.preventDefault();
+                                                onClickMovie?.(movie);
+                                            }
+                                        }}
                                     >
                                         {/* 포스터 카드: 폭/높이 살짝 더 줄임 */}
                                         <div className="relative aspect-[2/3] w-full max-w-[125px] overflow-hidden rounded-md bg-zinc-900">
@@ -168,7 +175,7 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                                 </div>
                                             )}
                                         </div>
-                                    </button>
+                                    </div>
                                 );
                             })}
                         </div>
