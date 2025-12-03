@@ -13,11 +13,11 @@ interface PopularInfiniteViewProps {
 }
 
 const PopularInfiniteView: React.FC<PopularInfiniteViewProps> = ({
-    movies,
-    loading,
-    hasMore,
-    onClickMovie,
-}) => {
+                                                                     movies,
+                                                                     loading,
+                                                                     hasMore,
+                                                                     onClickMovie,
+                                                                 }) => {
     const { toggleWishlist, isInWishlist } = useWishlist();
 
     return (
@@ -30,15 +30,33 @@ const PopularInfiniteView: React.FC<PopularInfiniteViewProps> = ({
 
             {movies.length > 0 && (
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
-                    {movies.map((movie) => (
-                        <MovieCard
-                            key={movie.id}
-                            movie={movie}
-                            onClick={() => onClickMovie?.(movie)}
-                            onToggleWishlist={() => toggleWishlist(movie)}
-                            inWishlist={isInWishlist(movie)}
-                        />
-                    ))}
+                    {movies.map((movie) => {
+                        const title = movie.title || movie.name || "제목 없음";
+                        const rating =
+                            typeof movie.vote_average === "number"
+                                ? movie.vote_average.toFixed(1)
+                                : null;
+
+                        return (
+                            <div key={movie.id} className="flex flex-col">
+                                <MovieCard
+                                    movie={movie}
+                                    onClick={() => onClickMovie?.(movie)}
+                                    onToggleWishlist={() => toggleWishlist(movie)}
+                                    inWishlist={isInWishlist(movie)}
+                                />
+                                <div className="mt-1 flex flex-col gap-0.5 px-0.5 text-[11px] text-slate-200 md:text-xs">
+                                    <p className="font-medium truncate">{title}</p>
+                                    {rating && (
+                                        <div className="flex items-center gap-1 text-[10px] text-amber-300 md:text-[11px]">
+                                            <span aria-hidden="true">★</span>
+                                            <span>{rating}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             )}
 

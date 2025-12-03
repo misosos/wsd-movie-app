@@ -14,12 +14,12 @@ interface SearchResultsGridProps {
 }
 
 const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
-    loading,
-    error,
-    hasMore,
-    movies,
-    onClickMovie,
-}) => {
+                                                                 loading,
+                                                                 error,
+                                                                 hasMore,
+                                                                 movies,
+                                                                 onClickMovie,
+                                                             }) => {
     const { toggleWishlist, isInWishlist } = useWishlist();
 
     const uniqueMovies = (() => {

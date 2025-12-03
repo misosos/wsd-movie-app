@@ -1,5 +1,5 @@
 // src/components/popular/PopularHeader.tsx
-import React from "react";
+import type React from "react";
 
 export type ViewMode = "table" | "infinite";
 
@@ -12,44 +12,91 @@ const PopularHeader: React.FC<PopularHeaderProps> = ({
                                                          viewMode,
                                                          onChangeView,
                                                      }) => {
+    const isTable = viewMode === "table";
+    const isInfinite = viewMode === "infinite";
+
     return (
-        <div className="mb-4 flex flex-col justify-between gap-3 md:mb-6 md:flex-row md:items-center">
+        <header className="mb-4 flex flex-col items-start justify-between gap-3 md:mb-6 md:flex-row md:items-center">
             <div>
                 <h1 className="text-2xl font-bold text-white md:text-3xl">
                     대세 콘텐츠
                 </h1>
                 <p className="mt-1 text-xs text-slate-400 md:text-sm">
-                    TMDB 인기 영화 리스트를 Table/Paging 또는 무한 스크롤로 확인해보세요.
+                    인기 영화들을 테이블 또는 무한 스크롤 방식으로 살펴볼 수 있습니다.
                 </p>
             </div>
 
-            <div className="inline-flex rounded-full bg-slate-800/80 p-1 text-xs md:text-sm">
+            {/* 뷰 모드 토글 (아이콘 버튼) */}
+            <div className="inline-flex items-center gap-2 rounded-full bg-zinc-900/80 px-2 py-1 text-xs text-slate-200 shadow-md shadow-black/40 md:text-sm">
+                {/* 테이블 뷰 아이콘 버튼 */}
                 <button
                     type="button"
                     onClick={() => onChangeView("table")}
                     className={
-                        "rounded-full px-3 py-1.5 md:px-4 " +
-                        (viewMode === "table"
-                            ? "bg-[#e50914] text-white shadow"
-                            : "text-slate-300 hover:text-white")
+                        "inline-flex items-center gap-2 rounded-full px-3 py-1.5 font-medium transition-colors " +
+                        (isTable
+                            ? "bg-red-600 text-white"
+                            : "text-slate-300 hover:bg-zinc-800 hover:text-white")
                     }
+                    aria-label="테이블 뷰"
                 >
-                    Table View
+                    {/* 테이블 / 그리드 아이콘 */}
+                    <span className="inline-grid h-4 w-4 grid-cols-2 grid-rows-2 gap-[1px]">
+                        <span
+                            className={
+                                "rounded-[2px] " +
+                                (isTable ? "bg-white" : "bg-slate-400/80")
+                            }
+                        />
+                        <span
+                            className={
+                                "rounded-[2px] " +
+                                (isTable ? "bg-white" : "bg-slate-500/80")
+                            }
+                        />
+                        <span
+                            className={
+                                "rounded-[2px] " +
+                                (isTable ? "bg-white" : "bg-slate-500/80")
+                            }
+                        />
+                        <span
+                            className={
+                                "rounded-[2px] " +
+                                (isTable ? "bg-white" : "bg-slate-600/80")
+                            }
+                        />
+                    </span>
                 </button>
+
+                {/* 무한 스크롤 뷰 아이콘 버튼 */}
                 <button
                     type="button"
                     onClick={() => onChangeView("infinite")}
                     className={
-                        "rounded-full px-3 py-1.5 md:px-4 " +
-                        (viewMode === "infinite"
-                            ? "bg-[#e50914] text-white shadow"
-                            : "text-slate-300 hover:text-white")
+                        "inline-flex items-center gap-2 rounded-full px-3 py-1.5 font-medium transition-colors " +
+                        (isInfinite
+                            ? "bg-red-600 text-white"
+                            : "text-slate-300 hover:bg-zinc-800 hover:text-white")
                     }
+                    aria-label="무한 스크롤 뷰"
                 >
-                    무한 스크롤
+                    {/* 스크롤 아이콘 (리스트 + 아래 화살표) */}
+                    <span className="flex h-4 w-4 flex-col items-center justify-center">
+                        <span className="h-[2px] w-full rounded bg-slate-400/80" />
+                        <span className="mt-[2px] h-[2px] w-3/4 rounded bg-slate-500/80" />
+                        <span className="mt-[3px] inline-flex items-center justify-center text-[9px]">
+                            <span
+                                className={
+                                    "inline-block h-0 w-0 border-l-[4px] border-r-[4px] border-t-[6px] border-l-transparent border-r-transparent " +
+                                    (isInfinite ? "border-t-white" : "border-t-slate-400/80")
+                                }
+                            />
+                        </span>
+                    </span>
                 </button>
             </div>
-        </div>
+        </header>
     );
 };
 

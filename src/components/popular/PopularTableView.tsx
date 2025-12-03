@@ -11,29 +11,33 @@ interface PopularTableViewProps {
     totalPages: number;
     onPrevPage: () => void;
     onNextPage: () => void;
-    onClickMovie?: (movie: TmdbMovie) => void; // 카드 클릭 시 상세보기용
-    onToggleWishlist?: (movie: TmdbMovie) => void; // 위시리스트 토글 (선택)
-    isInWishlist?: (movie: TmdbMovie) => boolean;   // 위시리스트 여부 확인 (선택)
+    onClickMovie?: (movie: TmdbMovie) => void;
+    onToggleWishlist?: (movie: TmdbMovie) => void;
+    isInWishlist?: (movie: TmdbMovie) => boolean;
 }
 
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w342";
+const MOVIES_PER_TABLE_PAGE = 10;
 
 const PopularTableView: React.FC<PopularTableViewProps> = ({
-    movies,
-    loading,
-    error,
-    page,
-    totalPages,
-    onPrevPage,
-    onNextPage,
-    onClickMovie,
-    onToggleWishlist,
-    isInWishlist,
-}) => {
+                                                               movies,
+                                                               loading,
+                                                               error,
+                                                               page,
+                                                               totalPages,
+                                                               onPrevPage,
+                                                               onNextPage,
+                                                               onClickMovie,
+                                                               onToggleWishlist,
+                                                               isInWishlist,
+                                                           }) => {
+    const visibleMovies = movies.slice(0, MOVIES_PER_TABLE_PAGE);
+
     return (
-        <section className="mt-6">
+        // 섹션 자체는 overflow 보이도록 + 위 여백 조금 줄이기
+        <section className="mt-4 overflow-visible">
             {loading && (
-                <div className="flex justify-center py-10">
+                <div className="flex justify-center py-8">
                     <Spinner />
                 </div>
             )}
@@ -50,12 +54,12 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                 </div>
             )}
 
-            {!loading && !error && movies.length > 0 && (
+            {!loading && !error && visibleMovies.length > 0 && (
                 <>
-                    {/* 넷플릭스 느낌의 어두운 패널 + 카드 그리드 */}
-                    <div className="mx-auto max-w-6xl rounded-xl bg-[#141414] px-4 py-6 shadow-lg">
-                        <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                            {movies.map((movie, idx) => {
+                    {/* 카드 패널 전체 높이/패딩을 조금 더 컴팩트하게 */}
+                    <div className="mx-auto max-w-4xl rounded-xl bg-[#141414] px-2 py-2 shadow-lg overflow-visible">
+                        <div className="grid grid-cols-2 gap-x-3 gap-y-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                            {visibleMovies.map((movie, idx) => {
                                 const title = movie.title || movie.name || "제목 없음";
                                 const posterUrl = movie.poster_path
                                     ? `${IMAGE_BASE_URL}${movie.poster_path}`
@@ -65,15 +69,16 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                         ? movie.vote_average.toFixed(1)
                                         : null;
                                 const inWishlist = isInWishlist ? isInWishlist(movie) : false;
+
                                 return (
                                     <button
                                         key={movie.id}
                                         type="button"
                                         onClick={() => onClickMovie?.(movie)}
-                                        className="group relative flex flex-col items-center text-center transition-transform duration-200 hover:scale-[1.03]"
+                                        className="group relative flex flex-col items-center text-center transition-transform duration-200 hover:scale-[1.02]"
                                     >
-                                        {/* 포스터 카드 */}
-                                        <div className="relative aspect-[2/3] w-full max-w-[160px] overflow-hidden rounded-md bg-zinc-900">
+                                        {/* 포스터 카드: 폭/높이 살짝 더 줄임 */}
+                                        <div className="relative aspect-[2/3] w-full max-w-[125px] overflow-hidden rounded-md bg-zinc-900">
                                             {posterUrl ? (
                                                 <img
                                                     src={posterUrl}
@@ -90,17 +95,26 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-90" />
 
                                             {/* 페이지 내 순위 뱃지 */}
-                                            <div className="absolute left-1.5 top-1.5 rounded bg-black/70 px-2 py-0.5 text-[10px] font-semibold text-slate-100 group-hover:bg-[#e50914] group-hover:text-white">
-                                                #{(page - 1) * movies.length + idx + 1}
+                                            <div className="absolute left-1.5 top-1.5 rounded bg-black/70 px-1.5 py-0.5 text-[9px] font-semibold text-slate-100 group-hover:bg-[#e50914] group-hover:text-white">
+                                                #{(page - 1) * MOVIES_PER_TABLE_PAGE + idx + 1}
                                             </div>
 
-                                            {/* 포스터 위 액션 버튼 (위시리스트 / 상세보기) */}
+                                            {/* 포스터 위 액션 버튼 */}
                                             {(onToggleWishlist || onClickMovie) && (
-                                                <div className="absolute inset-x-1 bottom-1 z-10 flex gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                                                <div
+                                                    className="
+                                                        absolute inset-x-2 top-1/2
+                                                        z-10 flex flex-col gap-1
+                                                        -translate-y-1/2
+                                                        opacity-0
+                                                        transition-opacity duration-200
+                                                        group-hover:opacity-100
+                                                    "
+                                                >
                                                     {onToggleWishlist && (
                                                         <button
                                                             type="button"
-                                                            className="inline-flex flex-1 items-center justify-center gap-1 rounded-full bg-black/70 px-2 py-1 text-[10px] text-slate-100 hover:bg-black/90"
+                                                            className="inline-flex items-center justify-center gap-1 rounded-full bg-black/75 px-2 py-1 text-[9px] text-slate-100 hover:bg-black/90"
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 onToggleWishlist(movie);
@@ -108,7 +122,7 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                                         >
                                                             <span
                                                                 className={
-                                                                    "text-xs " +
+                                                                    "text-[11px] leading-none " +
                                                                     (inWishlist ? "text-red-400" : "text-slate-200")
                                                                 }
                                                             >
@@ -123,29 +137,33 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                                     {onClickMovie && (
                                                         <button
                                                             type="button"
-                                                            className="inline-flex flex-1 items-center justify-center gap-1 rounded-full bg-[#e50914] px-2 py-1 text-[10px] font-semibold text-white hover:bg-[#b20710]"
+                                                            className="inline-flex items-center justify-center gap-1 rounded-full bg-[#e50914] px-2 py-1 text-[9px] font-semibold text-white hover:bg-[#b20710]"
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 onClickMovie(movie);
                                                             }}
                                                         >
-                                                            <span className="text-xs">🔍</span>
-                                                            <span className="truncate">상세보기</span>
+                                                            <span className="inline-flex h-3 w-3 items-center justify-center">
+                                                                <span className="flex h-3 w-3 items-center justify-center rounded-full border border-white/70 text-[9px] leading-none">
+                                                                    i
+                                                                </span>
+                                                            </span>
+                                                            <span className="truncate">상세정보</span>
                                                         </button>
                                                     )}
                                                 </div>
                                             )}
                                         </div>
 
-                                        {/* 제목 + 평점 */}
-                                        <div className="mt-2 w-full max-w-[160px] text-xs text-slate-100 md:text-sm">
+                                        {/* 제목 + 평점: 폰트 사이즈 살짝 축소 */}
+                                        <div className="mt-1.5 w-full max-w-[125px] text-[11px] text-slate-100 md:text-[12px]">
                                             <p className="truncate font-medium" title={title}>
                                                 {title}
                                             </p>
 
                                             {rating && (
-                                                <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-zinc-800/80 px-2 py-0.5 text-[11px] text-amber-300 md:text-xs">
-                                                    <span className="text-[10px] leading-none">★</span>
+                                                <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-zinc-800/80 px-1.5 py-0.5 text-[11px] text-amber-300 md:text-[12px]">
+                                                    <span className="text-[9px] leading-none">★</span>
                                                     <span className="tabular-nums">{rating}</span>
                                                 </div>
                                             )}
@@ -156,26 +174,26 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                         </div>
                     </div>
 
-                    {/* 넷플릭스 스타일 페이지네이션 */}
-                    <div className="mt-6 flex items-center justify-center gap-6 text-xs md:text-sm">
+                    {/* 페이지네이션: 높이 줄이기 */}
+                    <div className="mt-4 flex items-center justify-center gap-4 text-xs md:text-sm">
                         <button
                             type="button"
                             onClick={onPrevPage}
                             disabled={page === 1 || loading}
-                            className="rounded-full border border-transparent bg-zinc-800 px-4 py-2 font-medium text-slate-100 transition-colors hover:bg-zinc-700 disabled:cursor-not-allowed disabled:border-zinc-700 disabled:bg-zinc-800 disabled:text-zinc-500"
+                            className="rounded-full border border-transparent bg-zinc-800 px-3 py-1.5 font-medium text-slate-100 transition-colors hover:bg-zinc-700 disabled:cursor-not-allowed disabled:border-zinc-700 disabled:bg-zinc-800 disabled:text-zinc-500"
                         >
                             {"< 이전"}
                         </button>
 
-                        <span className="min-w-[80px] text-center text-slate-200">
-              {page} / {totalPages || 1}
-            </span>
+                        <span className="min-w-[72px] text-center text-slate-200">
+                            {page} / {totalPages || 1}
+                        </span>
 
                         <button
                             type="button"
                             onClick={onNextPage}
                             disabled={loading || (totalPages ? page >= totalPages : false)}
-                            className="rounded-full border border-transparent bg-[#e50914] px-4 py-2 font-medium text-white transition-colors hover:bg-[#b20710] disabled:cursor-not-allowed disabled:border-zinc-700 disabled:bg-zinc-800 disabled:text-zinc-500"
+                            className="rounded-full border border-transparent bg-[#e50914] px-3 py-1.5 font-medium text-white transition-colors hover:bg-[#b20710] disabled:cursor-not-allowed disabled:border-zinc-700 disabled:bg-zinc-800 disabled:text-zinc-500"
                         >
                             {"다음 >"}
                         </button>

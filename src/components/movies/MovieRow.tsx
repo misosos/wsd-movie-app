@@ -14,12 +14,12 @@ interface MovieRowProps {
 }
 
 const MovieRow: React.FC<MovieRowProps> = ({
-    title,
-    movies,
-    loading,
-    error,
-    onClickMovie,
-}) => {
+                                               title,
+                                               movies,
+                                               loading,
+                                               error,
+                                               onClickMovie,
+                                           }) => {
     const { toggleWishlist, isInWishlist } = useWishlist();
     const ITEMS_PER_PAGE = 6;
 

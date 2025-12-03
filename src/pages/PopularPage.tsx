@@ -7,7 +7,7 @@ import PopularHeader from "../components/popular/PopularHeader";
 import type { ViewMode } from "../components/popular/PopularHeader";
 import PopularTableView from "../components/popular/PopularTableView";
 import PopularInfiniteView from "../components/popular/PopularInfiniteView";
-import ScrollTopButton from "../components/popular/ScrollTopButton";
+import ScrollTopButton from "../components/common/ScrollToTopButton.tsx";
 import MovieDetailModal from "../components/movies/MovieDetailModal";
 import { useWishlist } from "../context/WishlistContext";
 

@@ -5,7 +5,7 @@ import type { TmdbMovie } from "../types/tmdb";
 import { getMovieGenres, getPopularMovies } from "../api/tmdb";
 import SearchFilterBar from "../components/search/SearchFilterBar";
 import SearchResultsGrid from "../components/search/SearchResultsGrid";
-import ScrollTopButton from "../components/popular/ScrollTopButton";
+import ScrollTopButton from "../components/common/ScrollToTopButton.tsx";
 import MovieDetailModal from "../components/movies/MovieDetailModal";
 
 type Genre = {
@@ -244,8 +244,8 @@ const SearchPage: React.FC = () => {
                 genreNames={
                     selectedMovie
                         ? genres
-                              .filter((g) => selectedMovie.genre_ids?.includes(g.id))
-                              .map((g) => g.name)
+                            .filter((g) => selectedMovie.genre_ids?.includes(g.id))
+                            .map((g) => g.name)
                         : []
                 }
             />

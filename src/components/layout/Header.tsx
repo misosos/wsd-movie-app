@@ -8,8 +8,8 @@ const Header: React.FC = () => {
     const { user, isLoggedIn, logout } = useAuth();
 
     const navLinkClass = ({
-        isActive,
-    }: {
+                              isActive,
+                          }: {
         isActive: boolean;
         isPending: boolean;
     }) =>
