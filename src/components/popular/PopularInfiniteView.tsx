@@ -30,15 +30,21 @@ const PopularInfiniteView: React.FC<PopularInfiniteViewProps> = ({
 
             {movies.length > 0 && (
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-5">
-                    {movies.map((movie) => {
+                    {movies.map((movie, index) => {
                         const title = movie.title || movie.name || "제목 없음";
                         const rating =
                             typeof movie.vote_average === "number"
                                 ? movie.vote_average.toFixed(1)
                                 : null;
+                        const rank = index + 1;
 
                         return (
-                            <div key={movie.id} className="flex flex-col">
+                            <div key={movie.id} className="relative flex flex-col">
+                                {/* 순번 배지 */}
+                                <span className="pointer-events-none absolute left-1 top-1 z-20 rounded bg-black/70 px-1.5 py-0.5 text-[11px] font-semibold text-slate-100 md:text-xs">
+                                    {`#${rank}`}
+                                </span>
+
                                 <MovieCard
                                     movie={movie}
                                     onClick={() => onClickMovie?.(movie)}

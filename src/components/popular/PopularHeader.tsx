@@ -18,7 +18,8 @@ const PopularHeader: React.FC<PopularHeaderProps> = ({
     return (
         <header className="mb-4 flex flex-col items-start justify-between gap-3 md:mb-6 md:flex-row md:items-center">
             <div>
-                <h1 className="text-2xl font-bold text-white md:text-3xl">
+                <h1 className="flex items-center gap-2 text-xl font-bold text-white md:text-2xl">
+                    <i className="fas fa-chart-line text-sm text-red-400 md:text-base" aria-hidden="true" />
                     대세 콘텐츠
                 </h1>
                 <p className="mt-1 text-xs text-slate-400 md:text-sm">
