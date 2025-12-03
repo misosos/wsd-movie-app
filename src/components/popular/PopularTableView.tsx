@@ -35,7 +35,7 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
 
     return (
         // 섹션 자체는 overflow 보이도록 + 위 여백 조금 줄이기
-        <section className="mt-4 overflow-visible">
+        <section className="mt-4 overflow-hidden">
             {loading && (
                 <div className="flex justify-center py-8">
                     <Spinner />
@@ -57,7 +57,7 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
             {!loading && !error && visibleMovies.length > 0 && (
                 <>
                     {/* 카드 패널 전체 높이/패딩을 조금 더 컴팩트하게 */}
-                    <div className="mx-auto max-w-4xl rounded-xl bg-[#141414] px-2 py-2 shadow-lg overflow-visible">
+                    <div className="mx-auto max-w-4xl rounded-xl bg-[#141414] px-2 py-2 shadow-lg overflow-hidden">
                         <div className="grid grid-cols-2 gap-x-3 gap-y-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                             {visibleMovies.map((movie, idx) => {
                                 const title = movie.title || movie.name || "제목 없음";
