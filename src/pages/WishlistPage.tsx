@@ -31,8 +31,12 @@ export default function WishlistPage() {
         <div className="min-h-screen">
             {/* 헤더 영역 */}
             <div className="mb-4 md:mb-6">
-                <h1 className="text-2xl font-bold text-white md:text-3xl">
-                    내가 찜한 리스트
+                <h1 className="flex items-center gap-2 text-xl font-bold text-white md:text-2xl">
+                    <i
+                        className="fas fa-heart text-sm text-red-400 md:text-base"
+                        aria-hidden="true"
+                    />
+                    <span>내가 찜한 리스트</span>
                 </h1>
                 <p className="mt-1 text-xs text-slate-400 md:text-sm">
                     찜한 영화들을 한 곳에서 모아서 볼 수 있어요.
