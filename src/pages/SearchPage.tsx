@@ -13,7 +13,6 @@ type Genre = {
     name: string;
 };
 
-// 데모와 비슷하게 보여줄 대표 장르만 노출하기 위한 화이트리스트 (TMDB 장르 ID 기준)
 const DISPLAY_GENRE_IDS = [
     28, // Action
     12, // Adventure
@@ -101,7 +100,7 @@ const SearchPage: React.FC = () => {
                     const merged =
                         page === 1 ? res.data.results : [...prev, ...res.data.results];
 
-                    // ✅ id 기준으로 중복 영화 제거
+                    // id 기준으로 중복 영화 제거
                     const seen = new Set<number>();
                     return merged.filter((movie) => {
                         if (seen.has(movie.id)) return false;
@@ -202,8 +201,12 @@ const SearchPage: React.FC = () => {
         <div className="min-h-screen">
             {/* 타이틀 */}
             <div className="mb-4 md:mb-6">
-                <h1 className="text-2xl font-bold text-white md:text-3xl">
-                    찾아보기
+                <h1 className="flex items-center gap-2 text-xl font-bold text-white md:text-2xl">
+                    <i
+                        className="fas fa-search text-sm text-red-400 md:text-base"
+                        aria-hidden="true"
+                    />
+                    <span>찾아보기</span>
                 </h1>
                 <p className="mt-1 text-xs text-slate-400 md:text-sm">
                     TMDB 인기 영화를 장르, 평점, 언어, 정렬 기준으로 자유롭게 필터링해 보세요.
