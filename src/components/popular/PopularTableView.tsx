@@ -95,7 +95,7 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                     <div
                                         key={movie.id}
                                         onClick={() => onClickMovie?.(movie)}
-                                        className="group relative flex flex-col items-center text-center transition-transform duration-200 hover:scale-[1.02]"
+                                        className="hover-glow-red group relative flex flex-col items-center text-center transition-transform duration-200 hover:scale-[1.02]"
                                         role="button"
                                         tabIndex={0}
                                         onKeyDown={(e) => {
