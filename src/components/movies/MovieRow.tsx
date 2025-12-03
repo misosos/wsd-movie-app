@@ -9,9 +9,16 @@ interface MovieRowProps {
     movies: TmdbMovie[];
     loading: boolean;
     error?: string | null;
+    onClickMovie?: (movie: TmdbMovie) => void; //  카드 클릭 시 상세보기용
 }
 
-const MovieRow: React.FC<MovieRowProps> = ({ title, movies, loading, error }) => {
+const MovieRow: React.FC<MovieRowProps> = ({
+                                               title,
+                                               movies,
+                                               loading,
+                                               error,
+                                               onClickMovie,
+                                           }) => {
     const ITEMS_PER_PAGE = 6;
 
     const [page, setPage] = useState(0);
@@ -92,7 +99,11 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, loading, error }) =>
                                     className="flex gap-3 md:gap-4 min-w-full"
                                 >
                                     {chunk.map((movie) => (
-                                        <MovieCard key={movie.id} movie={movie} />
+                                        <MovieCard
+                                            key={movie.id}
+                                            movie={movie}
+                                            onClick={onClickMovie ? () => onClickMovie(movie) : undefined}
+                                        />
                                     ))}
                                 </div>
                             ))}
