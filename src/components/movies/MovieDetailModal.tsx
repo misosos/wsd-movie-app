@@ -40,7 +40,7 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({
             onClick={onClose}
         >
             <div
-                className="relative h-[80vh] w-[90vw] max-w-5xl overflow-hidden rounded-lg bg-zinc-900 text-white shadow-2xl"
+                className="hover-glow-red relative h-[80vh] w-[90vw] max-w-5xl overflow-hidden rounded-lg bg-zinc-900 text-white shadow-2xl"
                 onClick={(e) => e.stopPropagation()} // 모달 내부 클릭 시 닫히지 않도록
             >
                 {/* 상단 배경 이미지 */}

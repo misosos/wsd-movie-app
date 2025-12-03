@@ -150,3 +150,42 @@ body {
     opacity: 1;
     pointer-events: auto;
 }
+
+@layer utilities {
+    .hover-glow-red {
+        position: relative;
+        isolation: isolate; /* 글로우가 주변 요소에 섞이지 않게 */
+    }
+
+    .hover-glow-red::before {
+        content: "";
+        position: absolute;
+        inset: -6px; /* 기본: 카드보다 살짝 크게 */
+        border-radius: 0.75rem; /* 카드 모서리랑 비슷하게 */
+        background:
+                radial-gradient(circle at top, rgba(229, 9, 20, 0.6), transparent 60%),
+                radial-gradient(circle at bottom, rgba(229, 9, 20, 0.35), transparent 65%);
+        opacity: 0;
+        transform: scale(0.95);
+        transition:
+                opacity 0.3s ease-out,
+                transform 0.3s ease-out;
+        z-index: -1; /* 카드 뒤로 */
+    }
+
+    /* 데스크탑: hover, 모바일/터치/키보드: active & focus-visible 도 함께 처리 */
+    .hover-glow-red:hover::before,
+    .hover-glow-red:active::before,
+    .hover-glow-red:focus-visible::before {
+        opacity: 1;
+        transform: scale(1.03);
+    }
+
+    /* 작은 화면에서는 inset과 radius를 약간 줄여서 과한 번짐 방지 */
+    @media (max-width: 640px) {
+        .hover-glow-red::before {
+            inset: -4px;
+            border-radius: 0.5rem;
+        }
+    }
+}

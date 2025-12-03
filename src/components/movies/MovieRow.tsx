@@ -1,5 +1,5 @@
 // src/components/movies/MovieRow.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { TmdbMovie } from "../../types/tmdb";
 import MovieCard from "./MovieCard";
 import Spinner from "../common/Spinner";
@@ -23,16 +23,42 @@ const MovieRow: React.FC<MovieRowProps> = ({
                                                onClickMovie,
                                            }) => {
     const { toggleWishlist, isInWishlist } = useWishlist();
-    const ITEMS_PER_PAGE = 6;
 
+    const getItemsPerPage = () => {
+        if (typeof window === "undefined") return 6;
+        return window.innerWidth < 640 ? 3 : 6; // 모바일에서는 3개, 그 이상은 6개
+    };
+
+    const [itemsPerPage, setItemsPerPage] = useState<number>(getItemsPerPage());
     const [page, setPage] = useState(0);
 
+    useEffect(() => {
+        const handleResize = () => {
+            setItemsPerPage(getItemsPerPage());
+        };
 
-    const totalPages = Math.max(1, Math.ceil(movies.length / ITEMS_PER_PAGE));
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    useEffect(() => {
+        if (movies.length <= itemsPerPage) return;
+
+        const total = Math.max(1, Math.ceil(movies.length / itemsPerPage));
+
+        const interval = setInterval(() => {
+            setPage((prev) => (prev + 1) % total);
+        }, 5000); // 5초마다 자동 슬라이드
+
+        return () => clearInterval(interval);
+    }, [movies.length, itemsPerPage]);
+
+
+    const totalPages = Math.max(1, Math.ceil(movies.length / itemsPerPage));
 
     const pageChunks: TmdbMovie[][] = [];
-    for (let i = 0; i < movies.length; i += ITEMS_PER_PAGE) {
-        pageChunks.push(movies.slice(i, i + ITEMS_PER_PAGE));
+    for (let i = 0; i < movies.length; i += itemsPerPage) {
+        pageChunks.push(movies.slice(i, i + itemsPerPage));
     }
 
     const currentPage = Math.min(page, totalPages - 1);
@@ -75,7 +101,7 @@ const MovieRow: React.FC<MovieRowProps> = ({
             {!loading && !error && movies.length > 0 && (
                 <div className="relative">
                     {/* 좌우 슬라이드 버튼 (필요할 때만 표시) */}
-                    {movies.length > ITEMS_PER_PAGE && (
+                    {movies.length > itemsPerPage && (
                         <>
                             <button
                                 type="button"
@@ -103,24 +129,53 @@ const MovieRow: React.FC<MovieRowProps> = ({
                             {pageChunks.map((chunk, pageIndex) => (
                                 <div
                                     key={pageIndex}
-                                    className="flex gap-3 md:gap-4 min-w-full"
+                                    className={
+                                        "flex min-w-full gap-3 md:gap-4 transform-gpu transition-transform duration-500 ease-out " +
+                                        (pageIndex === currentPage
+                                            ? "scale-100 opacity-100"
+                                            : "scale-95 md:scale-90 opacity-70")
+                                    }
                                 >
-                                    {chunk.map((movie) => (
-                                        <MovieCard
-                                            key={movie.id}
-                                            movie={movie}
-                                            onClick={onClickMovie ? () => onClickMovie(movie) : undefined}
-                                            onToggleWishlist={() => toggleWishlist(movie)}
-                                            inWishlist={isInWishlist(movie)}
-                                        />
-                                    ))}
+                                    {chunk.map((movie, idx) => {
+                                        const centerIndex = Math.floor(chunk.length / 2);
+                                        const offset = idx - centerIndex;
+
+                                        let depthClass = "scale-95 opacity-70";
+                                        if (offset === 0) {
+                                            // 페이지 중앙 카드: 가장 앞에 보이도록
+                                            depthClass =
+                                                "scale-105 opacity-100 z-20 shadow-[0_18px_40px_rgba(0,0,0,0.7)]";
+                                        } else if (Math.abs(offset) === 1) {
+                                            // 중앙 양옆 카드: 살짝 강조
+                                            depthClass =
+                                                "scale-100 opacity-90 z-10 shadow-[0_12px_30px_rgba(0,0,0,0.5)]";
+                                        }
+
+                                        return (
+                                            <div
+                                                key={movie.id}
+                                                className={
+                                                    "transform-gpu transition-transform duration-500 ease-out origin-center " +
+                                                    "hover:-translate-y-1 hover:scale-105 " +
+                                                    depthClass
+                                                }
+                                            >
+                                                <MovieCard
+                                                    movie={movie}
+                                                    onClick={onClickMovie ? () => onClickMovie(movie) : undefined}
+                                                    onToggleWishlist={() => toggleWishlist(movie)}
+                                                    inWishlist={isInWishlist(movie)}
+                                                />
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             ))}
                         </div>
                     </div>
 
                     {/* 페이지 인디케이터 (●●●) */}
-                    {movies.length > ITEMS_PER_PAGE && (
+                    {movies.length > itemsPerPage && (
                         <div className="mt-2 flex justify-center gap-1">
                             {Array.from({ length: totalPages }).map((_, i) => (
                                 <span

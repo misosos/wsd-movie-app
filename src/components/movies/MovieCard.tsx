@@ -24,7 +24,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
 
     return (
         <article
-            className="group relative min-w-[140px] max-w-[180px] md:min-w-[180px] md:max-w-[220px] cursor-pointer transition-transform duration-200 ease-out hover:scale-105"
+            className="hover-glow-red group relative min-w-[140px] max-w-[180px] md:min-w-[180px] md:max-w-[220px] cursor-pointer transition-transform duration-200 ease-out hover:scale-105"
             onClick={onClick}
         >
             <div className="relative overflow-hidden rounded-md bg-zinc-900">
