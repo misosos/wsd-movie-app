@@ -11,19 +11,25 @@ interface PopularTableViewProps {
     totalPages: number;
     onPrevPage: () => void;
     onNextPage: () => void;
+    onClickMovie?: (movie: TmdbMovie) => void; // 카드 클릭 시 상세보기용
+    onToggleWishlist?: (movie: TmdbMovie) => void; // 위시리스트 토글 (선택)
+    isInWishlist?: (movie: TmdbMovie) => boolean;   // 위시리스트 여부 확인 (선택)
 }
 
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w342";
 
 const PopularTableView: React.FC<PopularTableViewProps> = ({
-                                                               movies,
-                                                               loading,
-                                                               error,
-                                                               page,
-                                                               totalPages,
-                                                               onPrevPage,
-                                                               onNextPage,
-                                                           }) => {
+    movies,
+    loading,
+    error,
+    page,
+    totalPages,
+    onPrevPage,
+    onNextPage,
+    onClickMovie,
+    onToggleWishlist,
+    isInWishlist,
+}) => {
     return (
         <section className="mt-6">
             {loading && (
@@ -58,10 +64,13 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                     typeof movie.vote_average === "number"
                                         ? movie.vote_average.toFixed(1)
                                         : null;
+                                const inWishlist = isInWishlist ? isInWishlist(movie) : false;
                                 return (
-                                    <div
+                                    <button
                                         key={movie.id}
-                                        className="group relative flex flex-col items-center text-center"
+                                        type="button"
+                                        onClick={() => onClickMovie?.(movie)}
+                                        className="group relative flex flex-col items-center text-center transition-transform duration-200 hover:scale-[1.03]"
                                     >
                                         {/* 포스터 카드 */}
                                         <div className="relative aspect-[2/3] w-full max-w-[160px] overflow-hidden rounded-md bg-zinc-900">
@@ -84,6 +93,48 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                             <div className="absolute left-1.5 top-1.5 rounded bg-black/70 px-2 py-0.5 text-[10px] font-semibold text-slate-100 group-hover:bg-[#e50914] group-hover:text-white">
                                                 #{(page - 1) * movies.length + idx + 1}
                                             </div>
+
+                                            {/* 포스터 위 액션 버튼 (위시리스트 / 상세보기) */}
+                                            {(onToggleWishlist || onClickMovie) && (
+                                                <div className="absolute inset-x-1 bottom-1 z-10 flex gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                                                    {onToggleWishlist && (
+                                                        <button
+                                                            type="button"
+                                                            className="inline-flex flex-1 items-center justify-center gap-1 rounded-full bg-black/70 px-2 py-1 text-[10px] text-slate-100 hover:bg-black/90"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                onToggleWishlist(movie);
+                                                            }}
+                                                        >
+                                                            <span
+                                                                className={
+                                                                    "text-xs " +
+                                                                    (inWishlist ? "text-red-400" : "text-slate-200")
+                                                                }
+                                                            >
+                                                                {inWishlist ? "♥" : "♡"}
+                                                            </span>
+                                                            <span className="truncate">
+                                                                {inWishlist ? "찜 해제" : "찜하기"}
+                                                            </span>
+                                                        </button>
+                                                    )}
+
+                                                    {onClickMovie && (
+                                                        <button
+                                                            type="button"
+                                                            className="inline-flex flex-1 items-center justify-center gap-1 rounded-full bg-[#e50914] px-2 py-1 text-[10px] font-semibold text-white hover:bg-[#b20710]"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                onClickMovie(movie);
+                                                            }}
+                                                        >
+                                                            <span className="text-xs">🔍</span>
+                                                            <span className="truncate">상세보기</span>
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
 
                                         {/* 제목 + 평점 */}
@@ -99,7 +150,7 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                                 </div>
                                             )}
                                         </div>
-                                    </div>
+                                    </button>
                                 );
                             })}
                         </div>

@@ -3,6 +3,7 @@ import React from "react";
 import type { TmdbMovie } from "../../types/tmdb";
 import MovieCard from "../movies/MovieCard";
 import Spinner from "../common/Spinner";
+import { useWishlist } from "../../context/WishlistContext";
 
 interface SearchResultsGridProps {
     loading: boolean;
@@ -19,6 +20,8 @@ const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
     movies,
     onClickMovie,
 }) => {
+    const { toggleWishlist, isInWishlist } = useWishlist();
+
     const uniqueMovies = (() => {
         const seen = new Set<number>();
         return movies.filter((movie) => {
@@ -52,6 +55,8 @@ const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
                         key={movie.id}
                         movie={movie}
                         onClick={() => onClickMovie?.(movie)}
+                        onToggleWishlist={() => toggleWishlist(movie)}
+                        inWishlist={isInWishlist(movie)}
                     />
                 ))}
             </div>

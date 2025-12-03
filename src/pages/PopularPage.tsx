@@ -8,10 +8,13 @@ import type { ViewMode } from "../components/popular/PopularHeader";
 import PopularTableView from "../components/popular/PopularTableView";
 import PopularInfiniteView from "../components/popular/PopularInfiniteView";
 import ScrollTopButton from "../components/popular/ScrollTopButton";
+import MovieDetailModal from "../components/movies/MovieDetailModal";
+import { useWishlist } from "../context/WishlistContext";
 
 const PopularPage: React.FC = () => {
     const { user } = useAuth();
     const apiKey = user?.password ?? "";
+    const { toggleWishlist, isInWishlist } = useWishlist();
 
     const [viewMode, setViewMode] = useState<ViewMode>("table");
 
@@ -29,6 +32,7 @@ const PopularPage: React.FC = () => {
     const [infiniteHasMore, setInfiniteHasMore] = useState(true);
 
     const [showTopButton, setShowTopButton] = useState(false);
+    const [selectedMovie, setSelectedMovie] = useState<TmdbMovie | null>(null);
 
     // ===== Table 뷰 데이터 로딩 =====
     useEffect(() => {
@@ -139,6 +143,9 @@ const PopularPage: React.FC = () => {
                     totalPages={tableTotalPages}
                     onPrevPage={handlePrevTablePage}
                     onNextPage={handleNextTablePage}
+                    onClickMovie={(movie) => setSelectedMovie(movie)}
+                    onToggleWishlist={(movie) => toggleWishlist(movie)}
+                    isInWishlist={(movie) => isInWishlist(movie)}
                 />
             )}
 
@@ -147,12 +154,19 @@ const PopularPage: React.FC = () => {
                     movies={infiniteMovies}
                     loading={infiniteLoading}
                     hasMore={infiniteHasMore}
+                    onClickMovie={(movie) => setSelectedMovie(movie)}
                 />
             )}
 
             {viewMode === "infinite" && (
                 <ScrollTopButton visible={showTopButton} onClick={handleScrollTop} />
             )}
+
+            <MovieDetailModal
+                isOpen={!!selectedMovie}
+                movie={selectedMovie}
+                onClose={() => setSelectedMovie(null)}
+            />
         </div>
     );
 };
