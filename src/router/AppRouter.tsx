@@ -5,17 +5,46 @@ import PopularPage from "../pages/PopularPage";
 import SearchPage from "../pages/SearchPage";
 import WishlistPage from "../pages/WishlistPage";
 import AuthPage from "../pages/AuthPage";
+import RequireAuth from "./RequireAuth";
 
 const AppRouter: React.FC = () => {
-    // 나중에 여기서 로그인 여부 체크해서 보호 라우트도 만들 수 있음
     return (
         <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/popular" element={<PopularPage />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/wishlist" element={<WishlistPage />} />
+            <Route
+                path="/"
+                element={
+                    <RequireAuth>
+                        <HomePage />
+                    </RequireAuth>
+                }
+            />
+            <Route
+                path="/popular"
+                element={
+                    <RequireAuth>
+                        <PopularPage />
+                    </RequireAuth>
+                }
+            />
+            <Route
+                path="/search"
+                element={
+                    <RequireAuth>
+                        <SearchPage />
+                    </RequireAuth>
+                }
+            />
+            <Route
+                path="/wishlist"
+                element={
+                    <RequireAuth>
+                        <WishlistPage />
+                    </RequireAuth>
+                }
+            />
+            {/* 로그인/회원가입은 누구나 접근 가능 */}
             <Route path="/signin" element={<AuthPage />} />
-            {/* 잘못된 주소 => 홈으로 */}
+            {/* 그 외 경로는 홈으로 */}
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
     );

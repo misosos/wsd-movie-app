@@ -1,5 +1,90 @@
-export default function HomePage() {
+// src/pages/HomePage.tsx
+import React, { useEffect, useState } from "react";
+import type { TmdbMovie } from "../types/tmdb";
+import {
+    getNowPlayingMovies,
+    getPopularMovies,
+    getTopRatedMovies,
+} from "../api/tmdb";
+import MovieRow from "../components/movies/MovieRow";
+import { useAuth } from "../context/AuthContext";
+
+const HomePage: React.FC = () => {
+    const { user } = useAuth();
+    const apiKey = user?.password; // 비밀번호 = TMDB API Key
+
+    const [nowPlaying, setNowPlaying] = useState<TmdbMovie[]>([]);
+    const [popular, setPopular] = useState<TmdbMovie[]>([]);
+    const [topRated, setTopRated] = useState<TmdbMovie[]>([]);
+
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!apiKey) {
+            // 아직 로그인 정보(키)가 없으면 호출하지 않음
+            return;
+        }
+
+        let isMounted = true;
+
+        const fetchMovies = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                const [nowPlayingRes, popularRes, topRatedRes] = await Promise.all([
+                    getNowPlayingMovies(apiKey, 1),
+                    getPopularMovies(apiKey, 1),
+                    getTopRatedMovies(apiKey, 1),
+                ]);
+
+                if (!isMounted) return;
+
+                setNowPlaying(nowPlayingRes.data.results);
+                setPopular(popularRes.data.results);
+                setTopRated(topRatedRes.data.results);
+            } catch (err) {
+                console.error(err);
+                if (isMounted) {
+                    setError("영화 목록을 불러오는 중 오류가 발생했습니다.");
+                }
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        fetchMovies();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [apiKey]);
+
     return (
-        <div>HomePage</div>
-    )
-}
+        <div className="home-page">
+            <MovieRow
+                title="현재 상영작"
+                movies={nowPlaying}
+                loading={loading && nowPlaying.length === 0}
+                error={error}
+            />
+            <MovieRow
+                title="인기 영화"
+                movies={popular}
+                loading={loading && popular.length === 0}
+                error={error}
+            />
+            <MovieRow
+                title="최고 평점 영화"
+                movies={topRated}
+                loading={loading && topRated.length === 0}
+                error={error}
+            />
+        </div>
+    );
+};
+
+export default HomePage;

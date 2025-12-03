@@ -1,36 +1,66 @@
+// src/api/tmdb.ts
 import axios from "axios";
 import type { TmdbListResponse, TmdbMovie } from "../types/tmdb";
 
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY as string;
 const BASE_URL = "https://api.themoviedb.org/3";
 const LANGUAGE = "ko-KR";
 
-const client = axios.create({
-    baseURL: BASE_URL,
-    params: {
-        api_key: API_KEY,
-        language: LANGUAGE,
-    },
-});
-
-export const getNowPlayingMovies = (page = 1) =>
-    client.get<TmdbListResponse<TmdbMovie>>("/movie/now_playing", {
-        params: { page },
+// 공용 axios 인스턴스 대신, 호출할 때마다 apiKey를 넘겨받는 형태로 구현
+export const getNowPlayingMovies = (apiKey: string, page = 1) =>
+    axios.get<TmdbListResponse<TmdbMovie>>(`${BASE_URL}/movie/now_playing`, {
+        params: {
+            api_key: apiKey,      // 로그인한 유저의 TMDB 키
+            language: LANGUAGE,
+            page,
+        },
     });
 
-export const getPopularMovies = (page = 1) =>
-    client.get<TmdbListResponse<TmdbMovie>>("/movie/popular", {
-        params: { page },
+export const getPopularMovies = (apiKey: string, page = 1) =>
+    axios.get<TmdbListResponse<TmdbMovie>>(`${BASE_URL}/movie/popular`, {
+        params: {
+            api_key: apiKey,
+            language: LANGUAGE,
+            page,
+        },
     });
 
-export const getTopRatedMovies = (page = 1) =>
-    client.get<TmdbListResponse<TmdbMovie>>("/movie/top_rated", {
-        params: { page },
+export const getTopRatedMovies = (apiKey: string, page = 1) =>
+    axios.get<TmdbListResponse<TmdbMovie>>(`${BASE_URL}/movie/top_rated`, {
+        params: {
+            api_key: apiKey,
+            language: LANGUAGE,
+            page,
+        },
     });
 
-export const searchMovies = (query: string, page = 1) =>
-    client.get<TmdbListResponse<TmdbMovie>>("/search/movie", {
-        params: { query, page, include_adult: false },
+export const searchMovies = (apiKey: string, query: string, page = 1) =>
+    axios.get<TmdbListResponse<TmdbMovie>>(`${BASE_URL}/search/movie`, {
+        params: {
+            api_key: apiKey,
+            language: LANGUAGE,
+            query,
+            page,
+            include_adult: false,
+        },
     });
 
-// 필요하면 discover, genre 등 추가
+export const getUpcomingMovies = (apiKey: string, page = 1) =>
+    axios.get<TmdbListResponse<TmdbMovie>>(`${BASE_URL}/movie/upcoming`, {
+        params: {
+            api_key: apiKey,
+            language: LANGUAGE,
+            page,
+        },
+    });
+
+// 장르 리스트 API (검색 필터용)
+export const getMovieGenres = (apiKey: string) =>
+    axios.get<{ genres: { id: number; name: string }[] }>(
+        `${BASE_URL}/genre/movie/list`,
+        {
+            params: {
+                api_key: apiKey,
+                language: LANGUAGE,
+            },
+        }
+    );
