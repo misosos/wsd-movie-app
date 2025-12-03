@@ -24,10 +24,10 @@ const MovieCard: React.FC<MovieCardProps> = ({
 
     return (
         <article
-            className="group relative min-w-[140px] max-w-[180px] md:min-w-[180px] md:max-w-[220px] cursor-pointer transition-transform duration-200 ease-out hover:scale-105"
+            className="hover-glow-red group relative w-[140px] md:w-[180px] cursor-pointer transition-transform duration-200 ease-out hover:scale-105"
             onClick={onClick}
         >
-            <div className="relative overflow-hidden rounded-md bg-zinc-900">
+            <div className="relative overflow-hidden rounded-md bg-zinc-900 aspect-[2/3]">
                 <img
                     src={imageUrl}
                     alt={title}
@@ -37,7 +37,9 @@ const MovieCard: React.FC<MovieCardProps> = ({
                 {/* 아래쪽 그라데이션 + 제목/액션 버튼 영역 */}
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-2 md:p-3">
                     {/* 제목 */}
-                    <h3 className="truncate text-xs font-semibold text-white md:text-sm">
+                    <h3
+                        className="min-h-[2.5rem] overflow-hidden text-xs font-semibold leading-snug text-white md:text-sm"
+                    >
                         {title}
                     </h3>
 
@@ -59,7 +61,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
                                         (inWishlist ? "text-red-400" : "text-slate-200")
                                     }
                                 >
-                                    {inWishlist ? "♥" : "♡"}
+                                    <i className={inWishlist ? "fas fa-heart" : "far fa-heart"} />
                                 </span>
                                 <span className="truncate">
                                     {inWishlist ? "찜 해제" : "찜하기"}
@@ -79,9 +81,7 @@ const MovieCard: React.FC<MovieCardProps> = ({
                             >
                                 {/* 깔끔한 정보 아이콘 (원 안의 i) */}
                                 <span className="inline-flex h-3 w-3 items-center justify-center">
-                                    <span className="flex h-3 w-3 items-center justify-center rounded-full border border-white/70 text-[9px] leading-none">
-                                        i
-                                    </span>
+                                    <i className="fas fa-info-circle text-[11px]" />
                                 </span>
                                 <span className="truncate">상세정보</span>
                             </button>
