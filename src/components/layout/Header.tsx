@@ -15,8 +15,10 @@ const Header: React.FC = () => {
         isPending: boolean;
     }) =>
         [
-            "text-sm md:text-base transition-colors",
-            isActive ? "text-white" : "text-slate-300 hover:text-white",
+            "relative text-sm md:text-base transition-colors pb-0.5 border-b-2 border-transparent px-2 md:px-3",
+            isActive
+                ? "text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-300 border-b-[#e50914]"
+                : "text-slate-300 hover:text-white hover:border-b-[#e50914]/80",
         ].join(" ");
 
     const handleLogout = () => {
@@ -39,7 +41,7 @@ const Header: React.FC = () => {
                 </Link>
 
                 {/* 네비게이션 */}
-                <nav className="ml-4 hidden items-center gap-4 md:flex">
+                <nav className="hidden flex-1 items-center justify-center md:flex md:gap-8 lg:gap-12">
                     <NavLink to="/" className={navLinkClass}>
                         홈
                     </NavLink>
