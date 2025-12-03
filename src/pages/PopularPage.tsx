@@ -53,7 +53,7 @@ const PopularPage: React.FC = () => {
             }
         };
 
-        fetchTable();
+        void fetchTable();
     }, [apiKey, viewMode, tablePage]);
 
     // ===== Infinite 뷰 데이터 로딩 =====
@@ -76,8 +76,7 @@ const PopularPage: React.FC = () => {
             }
         };
 
-        fetchInfinite();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        void fetchInfinite();
     }, [apiKey, viewMode, infinitePage]);
 
     // 뷰 모드 전환
