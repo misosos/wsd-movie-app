@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import type { TmdbMovie } from "../../types/tmdb";
 import MovieCard from "./MovieCard";
 import Spinner from "../common/Spinner";
+import { useWishlist } from "../../context/WishlistContext";
 
 interface MovieRowProps {
     title: string;
@@ -13,12 +14,13 @@ interface MovieRowProps {
 }
 
 const MovieRow: React.FC<MovieRowProps> = ({
-                                               title,
-                                               movies,
-                                               loading,
-                                               error,
-                                               onClickMovie,
-                                           }) => {
+    title,
+    movies,
+    loading,
+    error,
+    onClickMovie,
+}) => {
+    const { toggleWishlist, isInWishlist } = useWishlist();
     const ITEMS_PER_PAGE = 6;
 
     const [page, setPage] = useState(0);
@@ -103,6 +105,8 @@ const MovieRow: React.FC<MovieRowProps> = ({
                                             key={movie.id}
                                             movie={movie}
                                             onClick={onClickMovie ? () => onClickMovie(movie) : undefined}
+                                            onToggleWishlist={() => toggleWishlist(movie)}
+                                            inWishlist={isInWishlist(movie)}
                                         />
                                     ))}
                                 </div>

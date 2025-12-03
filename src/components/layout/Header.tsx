@@ -1,5 +1,5 @@
 // src/components/layout/Header.tsx
-import React from "react";
+import type React from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
@@ -25,7 +25,7 @@ const Header: React.FC = () => {
 
     return (
         <header className="fixed inset-x-0 top-0 z-30 bg-gradient-to-b from-black/90 via-black/70 to-transparent">
-            <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-8 md:py-4">
+            <div className="flex w-full items-center justify-between px-4 py-3 md:px-8 md:py-4">
                 {/* 로고 / 서비스명 */}
                 <Link to="/" className="flex items-center gap-2">
                     <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-[#e50914] text-lg font-extrabold text-white md:h-8 md:w-8">
@@ -56,9 +56,14 @@ const Header: React.FC = () => {
                 <div className="flex items-center gap-3">
                     {isLoggedIn && user ? (
                         <>
-                            <span className="hidden max-w-[160px] truncate text-xs text-slate-200 md:inline">
-                                {user.email}
-                            </span>
+                            {/* 프로필 아바타 아이콘 (이메일 첫 글자) */}
+                            <div
+                                className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-700 text-sm font-semibold uppercase text-white md:h-9 md:w-9"
+                                aria-label="프로필"
+                                title={user.email}
+                            >
+                                {user.email?.charAt(0) ?? "U"}
+                            </div>
                             <button
                                 type="button"
                                 onClick={handleLogout}
