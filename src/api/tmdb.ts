@@ -52,3 +52,15 @@ export const getUpcomingMovies = (apiKey: string, page = 1) =>
             page,
         },
     });
+
+// 장르 리스트 API (검색 필터용)
+export const getMovieGenres = (apiKey: string) =>
+    axios.get<{ genres: { id: number; name: string }[] }>(
+        `${BASE_URL}/genre/movie/list`,
+        {
+            params: {
+                api_key: apiKey,
+                language: LANGUAGE,
+            },
+        }
+    );
