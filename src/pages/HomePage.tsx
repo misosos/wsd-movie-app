@@ -10,6 +10,7 @@ import {
 import MovieRow from "../components/movies/MovieRow";
 import HeroMovieBanner from "../components/movies/HeroMovieBanner";
 import { useAuth } from "../context/AuthContext";
+import MovieDetailModal from "../components/movies/MovieDetailModal";
 
 const HomePage: React.FC = () => {
     const { user } = useAuth();
@@ -25,6 +26,7 @@ const HomePage: React.FC = () => {
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [selectedMovie, setSelectedMovie] = useState<TmdbMovie | null>(null);
 
     useEffect(() => {
         if (!apiKey) {
@@ -64,7 +66,7 @@ const HomePage: React.FC = () => {
             }
         };
 
-        fetchMovies();
+        void fetchMovies();
 
         return () => {
             isMounted = false;
@@ -74,7 +76,12 @@ const HomePage: React.FC = () => {
     return (
         <div className="home-page space-y-8">
             {/* 넷플릭스 스타일 메인 히어로 배너 */}
-            {featuredMovie && <HeroMovieBanner movie={featuredMovie} />}
+            {featuredMovie && (
+                <HeroMovieBanner
+                    movie={featuredMovie}
+                    onClickDetails={() => setSelectedMovie(featuredMovie)}
+                />
+            )}
 
             {/* 영화 리스트 섹션들 */}
             <MovieRow
@@ -82,24 +89,34 @@ const HomePage: React.FC = () => {
                 movies={nowPlaying}
                 loading={loading && nowPlaying.length === 0}
                 error={error}
+                onClickMovie={(movie) => setSelectedMovie(movie)}
             />
             <MovieRow
                 title="인기 영화"
                 movies={popular}
                 loading={loading && popular.length === 0}
                 error={error}
+                onClickMovie={(movie) => setSelectedMovie(movie)}
             />
             <MovieRow
                 title="최고 평점 영화"
                 movies={topRated}
                 loading={loading && topRated.length === 0}
                 error={error}
+                onClickMovie={(movie) => setSelectedMovie(movie)}
             />
             <MovieRow
                 title="개봉 예정작"
                 movies={upcoming}
                 loading={loading && upcoming.length === 0}
                 error={error}
+                onClickMovie={(movie) => setSelectedMovie(movie)}
+            />
+
+            <MovieDetailModal
+                isOpen={!!selectedMovie}
+                movie={selectedMovie}
+                onClose={() => setSelectedMovie(null)}
             />
         </div>
     );

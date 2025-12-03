@@ -1,9 +1,12 @@
 // src/pages/AuthPage.tsx
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { validateTmdbApiKey } from "../api/tmdbAuth";
 import toast from "react-hot-toast";
+import LoginForm from "../components/auth/LoginForm";
+import RegisterForm from "../components/auth/RegisterForm";
 
 type Mode = "login" | "register";
 
