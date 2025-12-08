@@ -1,0 +1,129 @@
+// src/pages/HomePage.tsx
+import React, { useEffect, useState } from "react";
+import type { TmdbMovie } from "../types/tmdb";
+import {
+    getNowPlayingMovies,
+    getPopularMovies,
+    getTopRatedMovies,
+    getUpcomingMovies,
+} from "../api/tmdb";
+import MovieRow from "../components/movies/MovieRow";
+import HeroMovieBanner from "../components/movies/HeroMovieBanner";
+import { useAuth } from "../context/AuthContext";
+import MovieDetailModal from "../components/movies/MovieDetailModal";
+
+const HomePage: React.FC = () => {
+    const { user } = useAuth();
+    const apiKey = user?.password; // 비밀번호 = TMDB API Key
+
+    const [nowPlaying, setNowPlaying] = useState<TmdbMovie[]>([]);
+    const [popular, setPopular] = useState<TmdbMovie[]>([]);
+    const [topRated, setTopRated] = useState<TmdbMovie[]>([]);
+    const [upcoming, setUpcoming] = useState<TmdbMovie[]>([]);
+
+    const featuredMovie =
+        nowPlaying[0] || popular[0] || topRated[0] || upcoming[0];
+
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [selectedMovie, setSelectedMovie] = useState<TmdbMovie | null>(null);
+
+    useEffect(() => {
+        if (!apiKey) {
+            // 아직 로그인 정보(키)가 없으면 호출하지 않음
+            return;
+        }
+
+        let isMounted = true;
+
+        const fetchMovies = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                const [nowPlayingRes, popularRes, topRatedRes, upcomingRes] = await Promise.all([
+                    getNowPlayingMovies(apiKey, 1),
+                    getPopularMovies(apiKey, 1),
+                    getTopRatedMovies(apiKey, 1),
+                    getUpcomingMovies(apiKey, 1),
+                ]);
+
+                if (!isMounted) return;
+
+                setNowPlaying(nowPlayingRes.data.results);
+                setPopular(popularRes.data.results);
+                setTopRated(topRatedRes.data.results);
+                setUpcoming(upcomingRes.data.results);
+            } catch (err) {
+                console.error(err);
+                if (isMounted) {
+                    setError("영화 목록을 불러오는 중 오류가 발생했습니다.");
+                }
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        void fetchMovies();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [apiKey]);
+
+    return (
+        <div className="home-page space-y-8">
+            {/* 넷플릭스 스타일 메인 히어로 배너 */}
+            {featuredMovie && (
+                <HeroMovieBanner
+                    movie={featuredMovie}
+                    onClickDetails={() => setSelectedMovie(featuredMovie)}
+                />
+            )}
+
+            {/* 영화 리스트 섹션들 */}
+            <MovieRow
+                title="현재 상영작"
+                iconClass="fas fa-film"
+                movies={nowPlaying}
+                loading={loading && nowPlaying.length === 0}
+                error={error}
+                onClickMovie={(movie) => setSelectedMovie(movie)}
+            />
+            <MovieRow
+                title="인기 영화"
+                iconClass="fas fa-fire"
+                movies={popular}
+                loading={loading && popular.length === 0}
+                error={error}
+                onClickMovie={(movie) => setSelectedMovie(movie)}
+            />
+            <MovieRow
+                title="최고 평점 영화"
+                iconClass="fas fa-star"
+                movies={topRated}
+                loading={loading && topRated.length === 0}
+                error={error}
+                onClickMovie={(movie) => setSelectedMovie(movie)}
+            />
+            <MovieRow
+                title="개봉 예정작"
+                iconClass="fas fa-calendar-alt"
+                movies={upcoming}
+                loading={loading && upcoming.length === 0}
+                error={error}
+                onClickMovie={(movie) => setSelectedMovie(movie)}
+            />
+
+            <MovieDetailModal
+                isOpen={!!selectedMovie}
+                movie={selectedMovie}
+                onClose={() => setSelectedMovie(null)}
+            />
+        </div>
+    );
+};
+
+export default HomePage;
