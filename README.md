@@ -59,13 +59,4 @@ http://localhost:5173
 
 ---
 
-## 프로덕션 빌드 & 미리보기
-
-프로덕션용 빌드와 로컬 미리보기는 다음 명령어를 사용합니다.
-
-```bash
-npm run build
-npm run preview
-```
-
 
