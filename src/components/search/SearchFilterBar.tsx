@@ -1,5 +1,5 @@
 // src/components/search/SearchFilterBar.tsx
-import React from "react";
+import React, { useState } from "react";
 
 interface Genre {
     id: number;
@@ -45,17 +45,37 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                                                              onChangeLanguage,
                                                              onResetFilters,
                                                          }) => {
+    const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+
     return (
         <div className="mb-6 space-y-4">
-            {/* 데모 스타일 필터 바 */}
+            {/* 필터 바 */}
             <div className="rounded-xl bg-[#141414] px-4 py-5 shadow-lg">
                 <p className="mb-3 text-center text-xs text-slate-300 md:text-sm">
                     선호하는 설정을 선택하세요
                 </p>
 
-                <div className="flex flex-wrap items-stretch justify-center gap-3">
+                {/* 모바일: 필터 열기/접기 토글 버튼 */}
+                <button
+                    type="button"
+                    onClick={() => setIsMobileFiltersOpen((prev) => !prev)}
+                    className="mt-1 flex w-full items-center justify-between rounded-lg border border-zinc-700 bg-[#141414] px-3 py-2 text-xs text-slate-200 md:hidden"
+                >
+                    <span>{isMobileFiltersOpen ? "필터 접기" : "필터 열기"}</span>
+                    <i
+                        className={`fas fa-chevron-${isMobileFiltersOpen ? "up" : "down"} text-[11px]`}
+                        aria-hidden="true"
+                    />
+                </button>
+
+                <div
+                    className={
+                        "mt-3 flex w-full flex-col gap-3 md:flex-row md:flex-wrap md:items-stretch md:justify-center " +
+                        (isMobileFiltersOpen ? "" : "hidden md:flex")
+                    }
+                >
                     {/* 장르 */}
-                    <div className="flex min-w-[140px] max-w-[180px] flex-col gap-1 rounded-lg border border-zinc-700/70 bg-[#181818]/80 px-3 py-2">
+                    <div className="flex w-full flex-col gap-1 rounded-lg border border-zinc-700/70 bg-[#181818]/80 px-3 py-2 md:min-w-[140px] md:max-w-[180px]">
                         <div className="flex items-center gap-1.5 text-[11px] text-slate-300 md:text-xs">
                             <i
                                 className="fas fa-film text-[#e50914]"
@@ -85,7 +105,7 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                     </div>
 
                     {/* 평점 */}
-                    <div className="flex min-w-[140px] max-w-[180px] flex-col gap-1 rounded-lg border border-zinc-700/70 bg-[#181818]/80 px-3 py-2">
+                    <div className="flex w-full flex-col gap-1 rounded-lg border border-zinc-700/70 bg-[#181818]/80 px-3 py-2 md:min-w-[140px] md:max-w-[180px]">
                         <div className="flex items-center gap-1.5 text-[11px] text-slate-300 md:text-xs">
                             <i
                                 className="fas fa-star text-[#e50914]"
@@ -107,7 +127,7 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                     </div>
 
                     {/* 언어 */}
-                    <div className="flex min-w-[140px] max-w-[180px] flex-col gap-1 rounded-lg border border-zinc-700/70 bg-[#181818]/80 px-3 py-2">
+                    <div className="flex w-full flex-col gap-1 rounded-lg border border-zinc-700/70 bg-[#181818]/80 px-3 py-2 md:min-w-[140px] md:max-w-[180px]">
                         <div className="flex items-center gap-1.5 text-[11px] text-slate-300 md:text-xs">
                             <i
                                 className="fas fa-language text-[#e50914]"
@@ -130,7 +150,7 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                     </div>
 
                     {/* 정렬 기준 */}
-                    <div className="flex min-w-[160px] max-w-[200px] flex-col gap-1 rounded-lg border border-zinc-700/70 bg-[#181818]/80 px-3 py-2">
+                    <div className="flex w-full flex-col gap-1 rounded-lg border border-zinc-700/70 bg-[#181818]/80 px-3 py-2 md:min-w-[160px] md:max-w-[200px]">
                         <div className="flex items-center gap-1.5 text-[11px] text-slate-300 md:text-xs">
                             <i
                                 className="fas fa-sort-amount-down text-[#e50914]"
@@ -151,7 +171,7 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                     </div>
 
                     {/* 초기화 버튼 */}
-                    <div className="flex min-w-[140px] max-w-[180px] flex-col gap-1 rounded-lg border border-zinc-700/70 bg-[#181818]/80 px-3 py-2">
+                    <div className="flex w-full flex-col gap-1 rounded-lg border border-zinc-700/70 bg-[#181818]/80 px-3 py-2 md:min-w-[140px] md:max-w-[180px]">
                         <div className="flex items-center gap-1.5 text-[11px] text-slate-300 md:text-xs">
                             <i
                                 className="fas fa-undo text-[#e50914]"
