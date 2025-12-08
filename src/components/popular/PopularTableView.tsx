@@ -37,7 +37,7 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
             const width = window.innerWidth;
             if (width < 640) {
                 // 모바일: 한 화면에 6개 정도
-                setItemsPerPage(6);
+                setItemsPerPage(4);
             } else if (width < 1024) {
                 // 태블릿: 8개
                 setItemsPerPage(8);
