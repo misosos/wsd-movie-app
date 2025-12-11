@@ -1,6 +1,3 @@
-// src/components/popular/PopularHeader.tsx
-import type React from "react";
-
 export type ViewMode = "table" | "infinite";
 
 interface PopularHeaderProps {
@@ -8,10 +5,10 @@ interface PopularHeaderProps {
     onChangeView: (mode: ViewMode) => void;
 }
 
-const PopularHeader: React.FC<PopularHeaderProps> = ({
+export default function PopularHeader ({
                                                          viewMode,
                                                          onChangeView,
-                                                     }) => {
+                                                     } : PopularHeaderProps) {
     const isTable = viewMode === "table";
     const isInfinite = viewMode === "infinite";
 
@@ -78,5 +75,3 @@ const PopularHeader: React.FC<PopularHeaderProps> = ({
         </header>
     );
 };
-
-export default PopularHeader;

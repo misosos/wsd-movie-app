@@ -1,17 +1,14 @@
-// src/components/layout/Header.tsx
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
-const Header: React.FC = () => {
+export default  function Header(){
     const navigate = useNavigate();
     const { user, isLoggedIn, logout } = useAuth();
     const [showEmail, setShowEmail] = useState(false);
     const [isNavOpen, setIsNavOpen] = useState(false);
 
-    const navLinkClass = ({
-                              isActive,
-                          }: {
+    const navLinkClass = ({isActive,}: {
         isActive: boolean;
         isPending: boolean;
     }) =>
@@ -36,7 +33,7 @@ const Header: React.FC = () => {
     return (
         <header className="fixed inset-x-0 top-0 z-30 bg-black/95 md:bg-gradient-to-b md:from-black/90 md:via-black/70 md:to-transparent">
             <div className="flex w-full items-center justify-between px-4 py-3 md:px-8 md:py-4">
-                {/* 로고 / 서비스명 */}
+                {/* 로고 */}
                 <Link to="/" className="flex items-center gap-2" onClick={() => setIsNavOpen(false)}>
                     <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-[#e50914] text-lg font-extrabold text-white md:h-8 md:w-8">
                         W
@@ -159,5 +156,3 @@ const Header: React.FC = () => {
         </header>
     );
 };
-
-export default Header;

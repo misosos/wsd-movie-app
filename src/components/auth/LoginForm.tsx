@@ -1,5 +1,3 @@
-import type React from "react";
-
 interface LoginFormProps {
     email: string;
     password: string;
@@ -9,14 +7,14 @@ interface LoginFormProps {
     onChangeKeepLogin: (value: boolean) => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({
-                                                 email,
-                                                 password,
-                                                 keepLogin,
-                                                 onChangeEmail,
-                                                 onChangePassword,
-                                                 onChangeKeepLogin,
-                                             }) => {
+export default function LoginForm({
+                       email,
+                       password,
+                       keepLogin,
+                       onChangeEmail,
+                       onChangePassword,
+                       onChangeKeepLogin,
+                   }: LoginFormProps) {
     return (
         <>
             <label className="block text-sm text-slate-200">
@@ -53,6 +51,4 @@ const LoginForm: React.FC<LoginFormProps> = ({
             </div>
         </>
     );
-};
-
-export default LoginForm;
+}

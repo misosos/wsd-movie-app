@@ -1,31 +1,20 @@
-// src/pages/WishlistPage.tsx
-import { useEffect, useState } from "react";
-import { useWishlist } from "../context/WishlistContext";
-import type { TmdbMovie } from "../types/tmdb";
-import MovieCard from "../components/movies/MovieCard";
-import MovieDetailModal from "../components/movies/MovieDetailModal";
+import MovieCard from "../components/common/MovieCard.tsx";
+import MovieDetailModal from "../components/common/MovieDetailModal.tsx";
 import ScrollTopButton from "../components/common/ScrollToTopButton.tsx";
+import { useWishlistPage } from "../hooks/useWishlistPage";
 
 export default function WishlistPage() {
-    const { wishlist, toggleWishlist, isInWishlist } = useWishlist();
-    const [selectedMovie, setSelectedMovie] = useState<TmdbMovie | null>(null);
-    const [showTopButton, setShowTopButton] = useState(false);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            const { scrollTop } = document.documentElement;
-            setShowTopButton(scrollTop > 400);
-        };
-
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    const handleScrollTop = () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    };
-
-    const hasMovies = wishlist.length > 0;
+    const {
+        wishlist,
+        toggleWishlist,
+        isInWishlist,
+        selectedMovie,
+        openMovie,
+        closeMovie,
+        showTopButton,
+        handleScrollTop,
+        hasMovies,
+    } = useWishlistPage();
 
     return (
         <div className="min-h-screen">
@@ -59,7 +48,7 @@ export default function WishlistPage() {
                             <MovieCard
                                 key={movie.id}
                                 movie={movie}
-                                onClick={() => setSelectedMovie(movie)}
+                                onClick={() => openMovie(movie)}
                                 onToggleWishlist={() => toggleWishlist(movie)}
                                 inWishlist={isInWishlist(movie)}
                             />
@@ -72,7 +61,7 @@ export default function WishlistPage() {
             <MovieDetailModal
                 isOpen={!!selectedMovie}
                 movie={selectedMovie}
-                onClose={() => setSelectedMovie(null)}
+                onClose={closeMovie}
             />
 
             {/* Top 버튼 */}

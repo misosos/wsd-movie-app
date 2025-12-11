@@ -1,7 +1,5 @@
-// src/components/movies/MovieRow.tsx
-import React, { useEffect, useState } from "react";
-import type { TmdbMovie } from "../../types/tmdb";
-import MovieCard from "./MovieCard";
+import {useEffect, useState} from "react";
+import MovieCard from "../common/MovieCard.tsx";
 import Spinner from "../common/Spinner";
 import { useWishlist } from "../../context/WishlistContext";
 
@@ -14,14 +12,14 @@ interface MovieRowProps {
     onClickMovie?: (movie: TmdbMovie) => void; //  카드 클릭 시 상세보기용
 }
 
-const MovieRow: React.FC<MovieRowProps> = ({
+export default function MovieRow ({
                                                title,
                                                iconClass,
                                                movies,
                                                loading,
                                                error,
                                                onClickMovie,
-                                           }) => {
+                                           } : MovieRowProps) {
     const { toggleWishlist, isInWishlist } = useWishlist();
 
     const getItemsPerPage = () => {
@@ -205,5 +203,3 @@ const MovieRow: React.FC<MovieRowProps> = ({
         </section>
     );
 };
-
-export default MovieRow;

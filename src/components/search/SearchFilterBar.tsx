@@ -1,5 +1,4 @@
-// src/components/search/SearchFilterBar.tsx
-import React, { useState } from "react";
+import { useState } from "react";
 
 interface Genre {
     id: number;
@@ -32,7 +31,7 @@ const LANGUAGE_OPTIONS: { value: LanguageFilter; label: string }[] = [
     { value: "en", label: "영어" },
 ];
 
-const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
+export default function SearchFilterBar({
                                                              genres,
                                                              genreLoading,
                                                              selectedGenreId,
@@ -44,7 +43,7 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                                                              language,
                                                              onChangeLanguage,
                                                              onResetFilters,
-                                                         }) => {
+                                                         } : SearchFilterBarProps){
     const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
     return (
@@ -192,5 +191,3 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
         </div>
     );
 };
-
-export default SearchFilterBar;

@@ -1,7 +1,3 @@
-// src/components/movies/MovieCard.tsx
-import React from "react";
-import type { TmdbMovie } from "../../types/tmdb";
-
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
 interface MovieCardProps {
@@ -11,12 +7,12 @@ interface MovieCardProps {
     inWishlist?: boolean;            // 위시에 있는지 여부 (UI 표현용)
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({
+export default function MovieCard({
                                                  movie,
                                                  onClick,
                                                  onToggleWishlist,
                                                  inWishlist = false,
-                                             }) => {
+                                             } : MovieCardProps) {
     const title = movie.title || movie.name || "제목 없음";
     const imageUrl = movie.poster_path
         ? `${IMAGE_BASE_URL}${movie.poster_path}`
@@ -92,5 +88,3 @@ const MovieCard: React.FC<MovieCardProps> = ({
         </article>
     );
 };
-
-export default MovieCard;

@@ -1,4 +1,3 @@
-// src/api/tmdbAuth.ts
 import axios from "axios";
 
 const BASE_URL = "https://api.themoviedb.org/3";
@@ -14,7 +13,7 @@ export async function validateTmdbApiKey(apiKey: string): Promise<boolean> {
             },
         });
         return res.status === 200;
-    } catch (error) {
+    } catch {
         // 401, 403 등 나오면 false
         return false;
     }
