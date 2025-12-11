@@ -51,12 +51,26 @@ npm install
 npm run dev
 ```
 
-기본 주소는 다음과 같습니다.
+---
 
-```text
-http://localhost:5173
+## 프로덕션 빌드
+
+배포용 정적 파일을 생성하려면 아래 명령어를 실행합니다.
+
+```bash
+npm run build
 ```
 
+빌드 결과는 `dist/` 디렉터리에 생성됩니다.
+
 ---
+
+## 빌드 미리보기 (Preview)
+
+빌드된 정적 파일을 로컬에서 미리 확인하려면 아래 명령어를 실행합니다.
+
+```bash
+npm run preview
+```
 
 
