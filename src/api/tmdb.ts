@@ -31,17 +31,6 @@ export const getTopRatedMovies = (apiKey: string, page = 1) =>
         },
     });
 
-export const searchMovies = (apiKey: string, query: string, page = 1) =>
-    axios.get<TmdbListResponse<TmdbMovie>>(`${BASE_URL}/search/movie`, {
-        params: {
-            api_key: apiKey,
-            language: LANGUAGE,
-            query,
-            page,
-            include_adult: false,
-        },
-    });
-
 export const getUpcomingMovies = (apiKey: string, page = 1) =>
     axios.get<TmdbListResponse<TmdbMovie>>(`${BASE_URL}/movie/upcoming`, {
         params: {
