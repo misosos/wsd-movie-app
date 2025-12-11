@@ -1,5 +1,5 @@
-// src/context/AuthContext.tsx
-import React, { createContext, useContext, useState } from "react";
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useState, type ReactNode } from "react";
 import type { AuthUser } from "../utils/auth";
 import {
     getCurrentUser,
@@ -24,7 +24,7 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<AuthUser | null>(() => getCurrentUser());
 
     const isLoggedIn = !!user;
@@ -41,8 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     const register: AuthContextValue["register"] = (email, password) => {
-        const result = signUp(email, password);
-        return result;
+        return signUp(email, password);
     };
 
     const logout = () => {
@@ -63,7 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             {children}
         </AuthContext.Provider>
     );
-};
+}
 
 export const useAuth = () => {
     const ctx = useContext(AuthContext);

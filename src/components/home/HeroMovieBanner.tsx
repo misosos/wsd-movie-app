@@ -1,7 +1,3 @@
-// src/components/movies/HeroMovieBanner.tsx
-import React from "react";
-import type { TmdbMovie } from "../../types/tmdb";
-
 const HERO_IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original";
 
 interface HeroMovieBannerProps {
@@ -9,10 +5,7 @@ interface HeroMovieBannerProps {
     onClickDetails?: () => void; // 상세 정보 버튼 클릭 시 호출
 }
 
-const HeroMovieBanner: React.FC<HeroMovieBannerProps> = ({
-                                                             movie,
-                                                             onClickDetails,
-                                                         }) => {
+export default function HeroMovieBanner({movie, onClickDetails,} : HeroMovieBannerProps){
     const title = movie.title || movie.name || "제목 없음";
     const overview = movie.overview;
     const backdropUrl = movie.backdrop_path
@@ -66,5 +59,3 @@ const HeroMovieBanner: React.FC<HeroMovieBannerProps> = ({
         </section>
     );
 };
-
-export default HeroMovieBanner;

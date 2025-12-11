@@ -1,6 +1,4 @@
-// src/components/popular/PopularTableView.tsx
-import React, { useEffect, useState } from "react";
-import type { TmdbMovie } from "../../types/tmdb";
+import { useEffect, useState } from "react";
 import Spinner from "../common/Spinner";
 
 interface PopularTableViewProps {
@@ -18,7 +16,7 @@ interface PopularTableViewProps {
 
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w342";
 
-const PopularTableView: React.FC<PopularTableViewProps> = ({
+export default function PopularTableView({
                                                                movies,
                                                                loading,
                                                                error,
@@ -29,7 +27,7 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                                                onClickMovie,
                                                                onToggleWishlist,
                                                                isInWishlist,
-                                                           }) => {
+                                                           } : PopularTableViewProps)  {
     const [itemsPerPage, setItemsPerPage] = useState<number>(6);
 
     useEffect(() => {
@@ -37,7 +35,7 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
             const width = window.innerWidth;
             if (width < 640) {
                 // 모바일: 한 화면에 6개 정도
-                setItemsPerPage(6);
+                setItemsPerPage(4);
             } else if (width < 1024) {
                 // 태블릿: 8개
                 setItemsPerPage(8);
@@ -85,10 +83,7 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                 const posterUrl = movie.poster_path
                                     ? `${IMAGE_BASE_URL}${movie.poster_path}`
                                     : undefined;
-                                const rating =
-                                    typeof movie.vote_average === "number"
-                                        ? movie.vote_average.toFixed(1)
-                                        : null;
+                                const rating = movie.vote_average.toFixed(1);
                                 const inWishlist = isInWishlist ? isInWishlist(movie) : false;
 
                                 return (
@@ -189,7 +184,7 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
                                                 {title}
                                             </p>
 
-                                            {rating && (
+                                            {movie.vote_average > 0 && (
                                                 <div className="mt-1 inline-flex items-center gap-1 rounded-full bg-zinc-800/80 px-1.5 py-0.5 text-[11px] text-amber-300 md:text-[12px]">
                                                     <span className="text-[9px] leading-none">★</span>
                                                     <span className="tabular-nums">{rating}</span>
@@ -231,5 +226,3 @@ const PopularTableView: React.FC<PopularTableViewProps> = ({
         </section>
     );
 };
-
-export default PopularTableView;

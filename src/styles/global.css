@@ -30,7 +30,6 @@ body {
     color: #f9fafb;
 }
 
-
 /* --- 기존 (은은한) pop-in 이 있었다고 가정하고, 그대로 유지 --- */
 @keyframes auth-pop-in {
     from {
@@ -93,63 +92,6 @@ body {
     backface-visibility: hidden;
 }
 
-/* ===========================
-   AuthPage: 로그인 / 회원가입 플립 전환
-   =========================== */
-
-/* 두 패널을 겹쳐놓는 컨테이너 */
-.auth-form-flip {
-    position: relative;
-    min-height: 220px;
-    perspective: 700px; /* 더 작은 값으로 3D 깊이를 강화 */
-}
-
-/* 로그인 / 회원가입 각각의 패널 공통 */
-.auth-panel {
-    position: absolute;
-    inset: 0;
-    transform-origin: top center;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
-    transform: rotateX(0deg) translateZ(0); /* 기본 상태 */
-    transition:
-            transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
-            opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-/* 개별 패널 (앞/뒤 순서 제어) */
-.auth-panel--login {
-    z-index: 2;
-}
-.auth-panel--register {
-    z-index: 1;
-}
-
-/* 로그인 모드: 로그인 패널이 앞, 회원가입은 뒤로 살짝 접혀 대기 */
-.auth-form-flip.is-login .auth-panel--login {
-    transform: rotateX(0deg) translateZ(0);
-    opacity: 1;
-    pointer-events: auto;
-}
-.auth-form-flip.is-login .auth-panel--register {
-    transform: rotateX(-105deg) translateY(-8px) translateZ(-40px); /* 위쪽 뒤로 접혀있는 3D 느낌 */
-    opacity: 0;
-    pointer-events: none;
-}
-
-/* 회원가입 모드:
-   - 로그인 패널이 아래로 접히며 사라지고
-   - 회원가입 패널이 위에서 펼쳐지며 등장 */
-.auth-form-flip.is-register .auth-panel--login {
-    transform: rotateX(105deg) translateY(8px) translateZ(-40px); /* 아래로 접히며 멀어지는 느낌 */
-    opacity: 0;
-    pointer-events: none;
-}
-.auth-form-flip.is-register .auth-panel--register {
-    transform: rotateX(0deg) translateZ(0);
-    opacity: 1;
-    pointer-events: auto;
-}
 
 @layer utilities {
     .hover-glow-red {

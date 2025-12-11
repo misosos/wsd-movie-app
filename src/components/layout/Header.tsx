@@ -1,17 +1,14 @@
-// src/components/layout/Header.tsx
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
-const Header: React.FC = () => {
+export default  function Header(){
     const navigate = useNavigate();
     const { user, isLoggedIn, logout } = useAuth();
     const [showEmail, setShowEmail] = useState(false);
     const [isNavOpen, setIsNavOpen] = useState(false);
 
-    const navLinkClass = ({
-                              isActive,
-                          }: {
+    const navLinkClass = ({isActive,}: {
         isActive: boolean;
         isPending: boolean;
     }) =>
@@ -36,12 +33,12 @@ const Header: React.FC = () => {
     return (
         <header className="fixed inset-x-0 top-0 z-30 bg-black/95 md:bg-gradient-to-b md:from-black/90 md:via-black/70 md:to-transparent">
             <div className="flex w-full items-center justify-between px-4 py-3 md:px-8 md:py-4">
-                {/* 로고 / 서비스명 */}
+                {/* 로고 */}
                 <Link to="/" className="flex items-center gap-2" onClick={() => setIsNavOpen(false)}>
                     <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-[#e50914] text-lg font-extrabold text-white md:h-8 md:w-8">
                         W
                     </div>
-                    <span className="text-lg font-bold tracking-tight text-white md:text-2xl">
+                    <span className="text-lg font-bold tracking-tight text-white md:text-1xl">
                         WSD<span className="text-[#e50914]">flix</span>
                     </span>
                 </Link>
@@ -70,21 +67,21 @@ const Header: React.FC = () => {
                             <button
                                 type="button"
                                 onClick={() => setShowEmail((prev) => !prev)}
-                                className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-700 text-sm font-semibold uppercase text-white md:h-9 md:w-9 focus:outline-none focus:ring-2 focus:ring-[#e50914] focus:ring-offset-2 focus:ring-offset-black"
+                                className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-700 text-[11px] font-semibold uppercase text-white md:h-8 md:w-8 md:text-xs focus:outline-none focus:ring-2 focus:ring-[#e50914] focus:ring-offset-2 focus:ring-offset-black"
                                 aria-label="프로필"
                                 title={user.email}
                             >
                                 {user.email?.charAt(0) ?? "U"}
                             </button>
                             {showEmail && (
-                                <span className="max-w-[120px] truncate text-[11px] text-slate-200 md:max-w-[160px] md:text-sm">
+                                <span className="max-w-[120px] truncate text-[10px] text-slate-200 md:max-w-[160px] md:text-xs">
                                     {user.email}
                                 </span>
                             )}
                             <button
                                 type="button"
                                 onClick={handleLogout}
-                                className="rounded bg-[#e50914] px-3 py-1.5 text-xs md:text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#b20710]"
+                                className="rounded bg-[#e50914] px-2.5 py-1 text-[11px] md:px-3 md:py-1.5 md:text-xs font-semibold text-white shadow-sm transition-colors hover:bg-[#b20710]"
                             >
                                 로그아웃
                             </button>
@@ -159,5 +156,3 @@ const Header: React.FC = () => {
         </header>
     );
 };
-
-export default Header;

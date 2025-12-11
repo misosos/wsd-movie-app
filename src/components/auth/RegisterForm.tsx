@@ -1,5 +1,3 @@
-import type React from "react";
-
 interface RegisterFormProps {
     email: string;
     password: string;
@@ -11,7 +9,7 @@ interface RegisterFormProps {
     onChangeAgree: (value: boolean) => void;
 }
 
-const RegisterForm: React.FC<RegisterFormProps> = ({
+export default function RegisterForm({
                                                        email,
                                                        password,
                                                        passwordCheck,
@@ -20,7 +18,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                                                        onChangePassword,
                                                        onChangePasswordCheck,
                                                        onChangeAgree,
-                                                   }) => {
+                                                   } : RegisterFormProps)  {
     return (
         <div className="space-y-4 rounded-2xl bg-slate-950/85 border border-slate-800 px-4 py-5 shadow-xl backdrop-blur-sm">
             <label className="block text-sm text-slate-200">
@@ -72,5 +70,3 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         </div>
     );
 };
-
-export default RegisterForm;

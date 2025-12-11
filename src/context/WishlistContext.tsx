@@ -1,12 +1,12 @@
-// src/context/WishlistContext.tsx
-import React, {
+/* eslint-disable react-refresh/only-export-components */
+import {
     createContext,
     useCallback,
     useContext,
     useEffect,
     useState,
+    type ReactNode,
 } from "react";
-import type { TmdbMovie } from "../types/tmdb";
 
 const WISHLIST_STORAGE_KEY = "wsd_movie_wishlist";
 
@@ -43,16 +43,12 @@ const saveWishlistToStorage = (wishlist: TmdbMovie[]) => {
     }
 };
 
-export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({
-                                                                              children,
-                                                                          }) => {
-    const [wishlist, setWishlist] = useState<TmdbMovie[]>([]);
+interface WishlistProviderProps {
+    children: ReactNode;
+}
 
-    // 최초 로딩
-    useEffect(() => {
-        const initial = loadWishlistFromStorage();
-        setWishlist(initial);
-    }, []);
+export function WishlistProvider({ children }: WishlistProviderProps) {
+    const [wishlist, setWishlist] = useState<TmdbMovie[]>(() => loadWishlistFromStorage());
 
     // 변경 시 localStorage에 반영
     useEffect(() => {
@@ -95,7 +91,7 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({
             {children}
         </WishlistContext.Provider>
     );
-};
+}
 
 export const useWishlist = (): WishlistContextValue => {
     const ctx = useContext(WishlistContext);

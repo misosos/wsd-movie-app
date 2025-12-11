@@ -1,4 +1,3 @@
-import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "../pages/HomePage";
 import PopularPage from "../pages/PopularPage";
@@ -7,7 +6,7 @@ import WishlistPage from "../pages/WishlistPage";
 import AuthPage from "../pages/AuthPage";
 import RequireAuth from "./RequireAuth";
 
-const AppRouter: React.FC = () => {
+export default function AppRouter() {
     return (
         <Routes>
             <Route
@@ -49,5 +48,3 @@ const AppRouter: React.FC = () => {
         </Routes>
     );
 };
-
-export default AppRouter;

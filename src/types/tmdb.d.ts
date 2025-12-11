@@ -1,4 +1,4 @@
-export interface TmdbMovie {
+interface TmdbMovie {
     id: number;
     title?: string;
     name?: string; // TV show
@@ -11,7 +11,7 @@ export interface TmdbMovie {
     genre_ids?: number[];
 }
 
-export interface TmdbListResponse<T> {
+interface TmdbListResponse<T> {
     page: number;
     results: T[];
     total_pages: number;

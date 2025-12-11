@@ -1,7 +1,4 @@
-// src/components/search/SearchResultsGrid.tsx
-import React from "react";
-import type { TmdbMovie } from "../../types/tmdb";
-import MovieCard from "../movies/MovieCard";
+import MovieCard from "../common/MovieCard.tsx";
 import Spinner from "../common/Spinner";
 import { useWishlist } from "../../context/WishlistContext";
 
@@ -13,13 +10,13 @@ interface SearchResultsGridProps {
     onClickMovie?: (movie: TmdbMovie) => void;
 }
 
-const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
+export default function SearchResultsGrid({
                                                                  loading,
                                                                  error,
                                                                  hasMore,
                                                                  movies,
                                                                  onClickMovie,
-                                                             }) => {
+                                                             } : SearchResultsGridProps) {
     const { toggleWishlist, isInWishlist } = useWishlist();
 
     const uniqueMovies = (() => {
@@ -75,5 +72,3 @@ const SearchResultsGrid: React.FC<SearchResultsGridProps> = ({
         </section>
     );
 };
-
-export default SearchResultsGrid;

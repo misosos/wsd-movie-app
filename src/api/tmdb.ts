@@ -1,6 +1,4 @@
-// src/api/tmdb.ts
 import axios from "axios";
-import type { TmdbListResponse, TmdbMovie } from "../types/tmdb";
 
 const BASE_URL = "https://api.themoviedb.org/3";
 const LANGUAGE = "ko-KR";
@@ -9,7 +7,7 @@ const LANGUAGE = "ko-KR";
 export const getNowPlayingMovies = (apiKey: string, page = 1) =>
     axios.get<TmdbListResponse<TmdbMovie>>(`${BASE_URL}/movie/now_playing`, {
         params: {
-            api_key: apiKey,      // ✅ 로그인한 유저의 TMDB 키
+            api_key: apiKey,      // 로그인한 유저의 TMDB 키
             language: LANGUAGE,
             page,
         },

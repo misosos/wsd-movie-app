@@ -1,15 +1,9 @@
-// src/components/common/ScrollTopButton.tsx
-import React from "react";
-
 interface ScrollTopButtonProps {
     visible: boolean;
     onClick: () => void;
 }
 
-const ScrollTopButton: React.FC<ScrollTopButtonProps> = ({
-                                                             visible,
-                                                             onClick,
-                                                         }) => {
+export default function ScrollTopButton ({visible, onClick,} :ScrollTopButtonProps ){
     if (!visible) return null;
 
     return (
@@ -22,5 +16,3 @@ const ScrollTopButton: React.FC<ScrollTopButtonProps> = ({
         </button>
     );
 };
-
-export default ScrollTopButton;

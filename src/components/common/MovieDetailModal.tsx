@@ -1,7 +1,4 @@
-// src/components/movies/MovieDetailModal.tsx
-import React from "react";
-import type { TmdbMovie } from "../../types/tmdb";
-import { useWishlist } from "../../context/WishlistContext";
+import { useWishlist } from "../../context/WishlistContext.tsx";
 
 type MovieDetailModalProps = {
     isOpen: boolean;
@@ -13,12 +10,12 @@ type MovieDetailModalProps = {
 const IMG_BASE = "https://image.tmdb.org/t/p/original";
 const POSTER_BASE = "https://image.tmdb.org/t/p/w500";
 
-const MovieDetailModal: React.FC<MovieDetailModalProps> = ({
+export default function MovieDetailModal({
                                                                isOpen,
                                                                movie,
                                                                genreNames = [],
                                                                onClose,
-                                                           }) => {
+                                                           } : MovieDetailModalProps){
     const { toggleWishlist, isInWishlist } = useWishlist();
 
     if (!isOpen || !movie) return null;
@@ -122,5 +119,3 @@ const MovieDetailModal: React.FC<MovieDetailModalProps> = ({
         </div>
     );
 };
-
-export default MovieDetailModal;
